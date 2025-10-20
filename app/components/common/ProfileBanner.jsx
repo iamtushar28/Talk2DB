@@ -1,6 +1,27 @@
+import Link from "next/link";
 import React, { useEffect, useRef } from "react";
 
-const ProfileBanner = ({ email, options = [], onClose }) => {
+const ProfileBanner = ({ email, onClose }) => {
+
+    const profileOptions = [
+        {
+            label: "Dashboard",
+            link: "/"
+        },
+        {
+            label: "Settings",
+            link: "/"
+        },
+        {
+            label: "Subscriptions",
+            link: "/"
+        },
+        {
+            label: "Log Out",
+            link: "/"
+        },
+    ];
+
     const bannerRef = useRef();
 
     // Close when clicking outside
@@ -29,14 +50,14 @@ const ProfileBanner = ({ email, options = [], onClose }) => {
             <div className="w-full h-[0.6px] mt-2 mb-2 bg-zinc-200"></div>
 
             {/* profile options */}
-            {options.map((option, index) => (
-                <button
+            {profileOptions.map((option, index) => (
+                <Link
                     key={index}
-                    onClick={option.onClick}
-                    className="w-full p-2 text-start hover:bg-zinc-100 rounded-lg transition-all duration-300 cursor-pointer"
+                    href={option.link}
+                    className="w-full p-2 text-start hover:bg-zinc-100 rounded-lg transition-all duration-300 cursor-pointer block"
                 >
                     {option.label}
-                </button>
+                </Link>
             ))}
         </div>
     );

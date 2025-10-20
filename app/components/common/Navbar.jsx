@@ -8,13 +8,6 @@ import ProfileBanner from "./ProfileBanner";
 const Navbar = () => {
   const [showProfileBanner, setShowProfileBanner] = useState(false);
 
-  const profileOptions = [
-    { label: "Dashboard", onClick: () => console.log("Dashboard clicked") },
-    { label: "Settings", onClick: () => console.log("Settings clicked") },
-    { label: "Subscriptions", onClick: () => console.log("Subscriptions clicked") },
-    { label: "Log Out", onClick: () => console.log("Log Out clicked") },
-  ];
-
   return (
     <nav className="h-16 px-4 w-full border-b border-zinc-200/60 flex justify-between items-center relative">
       {/* logo */}
@@ -38,7 +31,6 @@ const Navbar = () => {
       {showProfileBanner && (
         <ProfileBanner
           email="tusharsuryawanshi2232@gmail.com"
-          options={profileOptions}
           onClose={() => setShowProfileBanner(false)}
         />
       )}
