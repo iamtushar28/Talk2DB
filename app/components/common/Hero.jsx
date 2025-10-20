@@ -11,9 +11,8 @@ const Hero = () => {
                 <h4 className='text-2xl'>
                     Generate SQL Query
                 </h4>
-                <h4 className='text-lg text-zinc-400'>
+                <h4 className='text-lg text-zinc-600'>
                     Turn everyday language into queries.
-
                 </h4>
                 <button className='ml-1 text-violet-500 hover:underline transition-all duration-300 cursor-pointer'>Quick guide.</button>
             </div>

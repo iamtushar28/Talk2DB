@@ -1,6 +1,6 @@
 import React from 'react'
 import LightGrayButton from '../ui/LightGrayButton'
-import { IoPlayOutline, IoCodeSharp  } from "react-icons/io5";
+import { IoPlayOutline } from "react-icons/io5";
 import { BiEditAlt } from "react-icons/bi";
 
 const GeneratedResponse = () => {
