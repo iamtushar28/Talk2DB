@@ -1,8 +1,13 @@
 import DatabaseConnectionMethod from "./components/DatabaseConnectionMethod";
 import MongoDBConnection from "./components/MongoDBConnection";
 
-export default function Page({ params }) {
-  const { db } = params; // get the dynamic route (e.g. 'mysql', 'mongodb')
+// Mark the Page component as 'async'
+export default async function Page({ params }) {
+  
+  // Await the params object before destructuring (Next.js requirement)
+  const resolvedParams = await params;
+  const { db } = resolvedParams; // get the dynamic route (e.g. 'mysql', 'mongodb')
+  
   // Normalize for safety
   const dbName = db.toLowerCase();
 

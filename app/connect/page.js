@@ -6,14 +6,14 @@ const page = () => {
   // db options
   const dbOptions = [
     {
-      name: "mysql",
-      dbImage: "/images/db/mysql.svg",
-      title: "Connect to MySQL",
-    },
-    {
       name: "mongodb",
       dbImage: "/images/db/mongodb.svg",
       title: "Connect to MongoDB",
+    },
+    {
+      name: "mysql",
+      dbImage: "/images/db/mysql.svg",
+      title: "Connect to MySQL",
     },
   ];
 

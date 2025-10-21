@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React, { useEffect, useRef } from "react";
 
-const ProfileBanner = ({ email, onClose }) => {
+const ProfileBanner = ({ user, onClose, signOut }) => {
 
     const profileOptions = [
         {
@@ -14,10 +14,6 @@ const ProfileBanner = ({ email, onClose }) => {
         },
         {
             label: "Subscriptions",
-            link: "/"
-        },
-        {
-            label: "Log Out",
             link: "/"
         },
     ];
@@ -44,7 +40,9 @@ const ProfileBanner = ({ email, onClose }) => {
             <h2 className="font-semibold">My Account</h2>
 
             {/* user email */}
-            <p className="max-w-72 text-zinc-500 text-sm truncate">{email}</p>
+            <p className="max-w-72 text-zinc-500 text-sm truncate">
+                {user.email}
+            </p>
 
             {/* divider */}
             <div className="w-full h-[0.6px] mt-2 mb-2 bg-zinc-200"></div>
@@ -59,6 +57,15 @@ const ProfileBanner = ({ email, onClose }) => {
                     {option.label}
                 </Link>
             ))}
+
+            {/* sign out */}
+            <button
+                onClick={signOut}
+                className="w-full p-2 text-start hover:bg-zinc-100 rounded-lg transition-all duration-300 cursor-pointer block"
+            >
+                Sign Out
+            </button>
+
         </div>
     );
 };
