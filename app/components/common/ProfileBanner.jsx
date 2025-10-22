@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React, { useEffect, useRef } from "react";
+import { FaRegUserCircle } from "react-icons/fa";
 
 const ProfileBanner = ({ user, onClose, signOut }) => {
 
@@ -36,12 +37,10 @@ const ProfileBanner = ({ user, onClose, signOut }) => {
             ref={bannerRef}
             className="w-72 h-fit p-3 bg-white shadow-lg border border-zinc-300 rounded-lg absolute top-[58px] right-4 z-50"
         >
-            {/* title */}
-            <h2 className="font-semibold">My Account</h2>
-
             {/* user email */}
-            <p className="max-w-72 text-zinc-500 text-sm truncate">
-                {user.email}
+            <p className="font-semibold max-w-72 truncate flex gap-1 items-center">
+                <FaRegUserCircle />
+                {user.displayName}
             </p>
 
             {/* divider */}

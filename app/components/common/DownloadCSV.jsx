@@ -46,8 +46,8 @@ const DownloadCSV = ({ result, fileName = 'query_result.csv' }) => {
     return (
         <button
             onClick={downloadCSV}
-            className='p-3 text-sm border border-zinc-300 rounded-lg hover:bg-zinc-100 transition-all duration-300 cursor-pointer flex gap-2 items-center'>
-            Download .csv
+            className='p-2 text-sm border border-zinc-300 rounded-lg hover:bg-zinc-100 transition-all duration-300 cursor-pointer flex gap-2 items-center'>
+            .csv
             <PiMicrosoftExcelLogoFill className='text-lg text-green-600' />
         </button>
     );

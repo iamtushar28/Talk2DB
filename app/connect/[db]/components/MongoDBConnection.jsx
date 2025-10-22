@@ -6,12 +6,16 @@ import { collection, addDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { toast, Toaster } from 'react-hot-toast';
 import Link from 'next/link';
+import { PiSpinnerBold } from "react-icons/pi";
+import { useRouter } from "next/navigation";
 
 const MongoDBConnection = () => {
     const [userId, setUserId] = useState(null);
     const [isLoadingUser, setIsLoadingUser] = useState(true);
     const [dbSchema, setDbSchema] = useState('');
     const [isFetchingSchema, setIsFetchingSchema] = useState(false);
+
+    const router = useRouter();
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -89,6 +93,8 @@ const MongoDBConnection = () => {
             toast.success(`Connection saved successfully!`);
             reset();
             setDbSchema('');
+            // Redirecting after connection
+            router.push("/");
 
         } catch (e) {
             console.error("Error adding document: ", e);
@@ -138,22 +144,33 @@ const MongoDBConnection = () => {
                             required: 'Connection URL is required',
                             pattern: { value: /^mongodb(\+srv)?:\/\/.+/, message: 'Invalid MongoDB URL' }
                         })}
-                        className={`w-full h-24 mt-2 p-3 border rounded-lg outline-none ring-violet-500 resize-none ${errors.connectionURL ? 'border-red-500' : 'border-zinc-300 hover:ring-2'}`}
+                        className={`w-full h-28 mt-2 p-3 border rounded-lg outline-none ring-violet-500 ${errors.connectionURL ? 'border-red-500' : 'border-zinc-300 hover:ring-2'}`}
                     />
                     {errors.connectionURL && <p className="text-red-500 text-sm mt-1">{errors.connectionURL.message}</p>}
                 </div>
 
                 {/* get schema */}
-                <div className='flex justify-between items-center'>
-                    <button
-                        type="button"
-                        onClick={fetchSchema}
-                        disabled={isFetchingSchema}
-                        className='bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg'
-                    >
-                        {isFetchingSchema ? "Fetching Schema..." : "Get DB Schema"}
-                    </button>
-                </div>
+                {!dbSchema && (
+                    <div className='flex justify-end'>
+                        <button
+                            type="button"
+                            onClick={fetchSchema}
+                            disabled={isFetchingSchema}
+                            className={`mt-2 py-2 px-4 text-white font-semibold rounded-lg bg-violet-600 hover:bg-violet-700 cursor-pointer flex gap-2 items-center disabled:opacity-60`}
+                        >
+                            {isFetchingSchema ?
+                                <>
+                                    Fetching
+                                    <PiSpinnerBold className='text-xl animate-spin' />
+                                </>
+                                :
+                                <>
+                                    Get DB Schema
+                                </>
+                            }
+                        </button>
+                    </div>
+                )}
 
                 {/* schema display */}
                 {dbSchema && (
@@ -162,20 +179,31 @@ const MongoDBConnection = () => {
                         <textarea
                             readOnly
                             value={dbSchema}
-                            className={`w-full h-24 mt-2 p-3 border rounded-lg outline-none ring-violet-500 resize-none ring-2`}
+                            className={`w-full h-44 mt-2 p-3 border rounded-lg outline-none ring-violet-500 border-zinc-300 hover:ring-2`}
                         />
                     </div>
                 )}
 
-                <div className='w-full flex justify-end'>
-                    <button
-                        type="submit"
-                        className={`mt-2 py-2 px-4 text-white font-semibold rounded-lg bg-violet-600 hover:bg-violet-700 ${isSubmitting || !isValid ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        disabled={isSubmitting || !isValid}
-                    >
-                        {isSubmitting ? 'Saving...' : 'Save Connection'}
-                    </button>
-                </div>
+                {dbSchema && (
+                    <div className='w-full flex justify-end'>
+                        <button
+                            type="submit"
+                            disabled={isSubmitting || !isValid}
+                            className={`mt-2 py-2 px-4 text-white font-semibold rounded-lg bg-violet-600 hover:bg-violet-700 flex gap-2 items-center ${isSubmitting || !isValid ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                            {isSubmitting ?
+                                <>
+                                    Connecting
+                                    <PiSpinnerBold className='text-xl animate-spin' />
+                                </>
+                                :
+                                <>
+                                    Connect DB
+                                </>
+                            }
+                        </button>
+                    </div>
+                )}
             </form>
         </>
     );

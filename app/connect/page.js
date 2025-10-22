@@ -10,11 +10,11 @@ const page = () => {
       dbImage: "/images/db/mongodb.svg",
       title: "Connect to MongoDB",
     },
-    {
-      name: "mysql",
-      dbImage: "/images/db/mysql.svg",
-      title: "Connect to MySQL",
-    },
+    // {
+    //   name: "mysql",
+    //   dbImage: "/images/db/mysql.svg",
+    //   title: "Connect to MySQL",
+    // },
   ];
 
   return (

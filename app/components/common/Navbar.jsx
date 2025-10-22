@@ -14,11 +14,14 @@ const Navbar = () => {
   const [showProfileBanner, setShowProfileBanner] = useState(false);
 
   const [user, setUser] = useState(null);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
+
 
   // Listen for auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      setIsLoadingUser(false);
     });
     return () => unsubscribe();
   }, []);
@@ -41,7 +44,7 @@ const Navbar = () => {
         <UiButton title={'Go Pro'} icon={<IoRocket />} />
 
         {/* Show "Sign In" button if no user */}
-        {!user && (
+        {!user || isLoadingUser && (
           <Link
             href={'/signin'}
             className='px-3 md:px-5 py-2 font-semibold text-white bg-violet-600 hover:bg-violet-500 rounded-lg flex gap-2 items-center cursor-pointer transition-all duration-300'
@@ -50,6 +53,9 @@ const Navbar = () => {
             <IoMdArrowForward />
           </Link>
         )}
+
+        {/* loading state for user */}
+        {isLoadingUser && <div className="h-10 w-10 bg-zinc-300 rounded-full animate-pulse"></div>}
 
         {/* Show user profile if logged in */}
         {user && (

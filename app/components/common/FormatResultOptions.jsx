@@ -9,13 +9,13 @@ const FormatResultOptions = ({ result }) => {
             <div className='flex'>
 
                 {/* table */}
-                <button className='px-2 py-1 text-sm text-violet-500 font-semibold flex gap-1 items-center border border-zinc-300 rounded-l-lg'>
+                <button className='p-2 text-sm text-violet-500 font-semibold flex gap-1 items-center border border-zinc-300 rounded-l-lg'>
                     {/* icon */}
                     <LuTable2 />
                     Table
                 </button>
                 {/* chart */}
-                <button className='px-2 py-1 text-sm font-semibold flex gap-1 items-center border border-l-0 border-zinc-300 rounded-r-lg hover:bg-zinc-100 transition-all duration-300 cursor-pointer'>
+                <button className='p-2 text-sm font-semibold flex gap-1 items-center border border-l-0 border-zinc-300 rounded-r-lg hover:bg-zinc-100 transition-all duration-300 cursor-pointer'>
                     {/* icon */}
                     <LuChartPie />
                     Chart

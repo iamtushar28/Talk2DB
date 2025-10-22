@@ -8,20 +8,18 @@ import QueryInputBox from './QueryInputBox';
 import GeneratedResponse from './GeneratedResponse';
 
 const Hero = () => {
-    // Auth state
     const [user, setUser] = useState(null);
     const [isLoadingUser, setIsLoadingUser] = useState(true);
 
-    // NEW STATE: MongoDB connection data
-    const [dbConnectionData, setDbConnectionData] = useState(null);
+    // Multiple MongoDB connections
+    const [dbConnections, setDbConnections] = useState([]);
+    const [selectedDb, setSelectedDb] = useState(null);
     const [isLoadingConnection, setIsLoadingConnection] = useState(true);
-    const [isConnected, setIsConnected] = useState(false);
-    const [dbName, setDbName] = useState('...');
 
     // Query result
     const [generatedQuery, setGeneratedQuery] = useState('');
 
-    // Watch auth state
+    // ✅ Watch Firebase Auth state
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
@@ -30,9 +28,9 @@ const Hero = () => {
         return () => unsubscribe();
     }, []);
 
-    // Fetch DB connection once user is known
+    // ✅ Fetch all DB connections for the logged-in user
     useEffect(() => {
-        const fetchConnectionStatus = async () => {
+        const fetchConnections = async () => {
             if (!user) {
                 setIsLoadingConnection(false);
                 return;
@@ -41,30 +39,34 @@ const Hero = () => {
             try {
                 const connectionsRef = collection(db, 'mongodb_connections');
                 const q = query(connectionsRef, where('userId', '==', user.uid));
-                const querySnapshot = await getDocs(q);
+                const snapshot = await getDocs(q);
 
-                if (!querySnapshot.empty) {
-                    const data = querySnapshot.docs[0].data();
-                    setIsConnected(true);
-                    setDbConnectionData(data);
-                    setDbName(data.dbName || 'MongoDB');
-                } else {
-                    setIsConnected(false);
-                    setDbConnectionData(null);
-                    setDbName('...');
-                }
+                const data = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+
+                setDbConnections(data);
+
+                // Auto-select first DB if available
+                if (data.length > 0) setSelectedDb(data[0]);
             } catch (error) {
-                console.error('Error fetching connection:', error);
+                console.error('Error fetching MongoDB connections:', error);
             } finally {
                 setIsLoadingConnection(false);
             }
         };
 
-        fetchConnectionStatus();
+        fetchConnections();
     }, [user]);
 
     const handleSetQuery = (query) => {
         setGeneratedQuery(query);
+    };
+
+    const handleDbSelect = (dbId) => {
+        const selected = dbConnections.find(conn => conn.id === dbId);
+        setSelectedDb(selected);
     };
 
     return (
@@ -85,19 +87,21 @@ const Hero = () => {
                 {/* Query Input */}
                 <QueryInputBox
                     user={user}
-                    isConnected={isConnected}
+                    isConnected={!!selectedDb}
                     isLoadingConnection={isLoadingConnection}
-                    dbConnectionData={dbConnectionData}
-                    dbName={dbName}
+                    dbConnections={dbConnections}   // pass all
+                    selectedDb={selectedDb}          // pass selected
+                    setSelectedDb={setSelectedDb}    // allow child to update
                     setGeneratedQuery={handleSetQuery}
                 />
 
-                {/* Generated Response */}
+
+                {/* Generated Query Display */}
                 <GeneratedResponse
                     user={user}
                     query={generatedQuery}
-                    dbConnectionData={dbConnectionData}
-                    isConnected={isConnected}
+                    dbConnectionData={selectedDb}
+                    isConnected={!!selectedDb}
                 />
             </div>
         </div>

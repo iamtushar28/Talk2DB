@@ -57,8 +57,8 @@ const GeneratedResponse = ({ query, dbConnectionData }) => {
                     {/* Run Query */}
                     <button
                         onClick={handleRunQuery}
-                        disabled={!hasQuery || !dbConnectionData || isRunning}
-                        className={`px-2 md:px-4 py-2 text-sm font-semibold text-black bg-white hover:bg-zinc-100 rounded-lg flex gap-2 items-center cursor-pointer transition-all duration-300 disabled:cursor-not-allowed ${isRunning ? 'bg-zinc-100' : ''}`}
+                        disabled={!hasQuery || !dbConnectionData }
+                        className={`px-2 md:px-4 py-2 text-sm font-semibold text-black bg-white hover:bg-zinc-100 rounded-lg flex gap-2 items-center cursor-pointer transition-all duration-300 disabled:cursor-not-allowed disabled:text-zinc-400 disabled:hover:bg-white ${isRunning ? 'bg-zinc-100' : ''}`}
                     >
                         {isRunning ?
                             <>
@@ -73,15 +73,14 @@ const GeneratedResponse = ({ query, dbConnectionData }) => {
                         }
                     </button>
 
-                    {result && (
-                        <button
-                            onClick={() => setShowResult(true)}
-                            className='px-2 md:px-4 py-2 text-sm font-semibold text-black bg-white hover:bg-zinc-100 rounded-lg flex gap-2 items-center cursor-pointer transition-all duration-300'
-                        >
-                            Show Result
-                            <BiShowAlt className='text-lg' />
-                        </button>
-                    )}
+                    <button
+                        onClick={() => setShowResult(true)}
+                        disabled={!result}
+                        className='px-2 md:px-4 py-2 text-sm font-semibold text-black bg-white hover:bg-zinc-100 rounded-lg flex gap-2 items-center cursor-pointer transition-all duration-300 disabled:cursor-not-allowed disabled:text-zinc-400 disabled:hover:bg-white'
+                    >
+                        Show Result
+                        <BiShowAlt className='text-lg' />
+                    </button>
 
                 </div>
             </div>

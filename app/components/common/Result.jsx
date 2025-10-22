@@ -37,6 +37,7 @@ const Result = ({ result, onClose }) => {
 
                 <h4 className='text-lg font-semibold'>Results</h4>
 
+                {/* format result options component */}
                 <FormatResultOptions result={result} />
 
                 {/* Table */}
@@ -44,6 +45,7 @@ const Result = ({ result, onClose }) => {
                     <table className='w-full'>
                         <thead className='bg-gray-100 sticky top-0 capitalize'>
                             <tr>
+                                <th className='px-4 py-3 text-left'>#</th>
                                 {columns.map((col) => (
                                     <th key={col} className='px-4 py-3 text-left'>{col}</th>
                                 ))}
@@ -52,6 +54,12 @@ const Result = ({ result, onClose }) => {
                         <tbody>
                             {result.map((row, idx) => (
                                 <tr key={idx} className='hover:bg-zinc-50'>
+                                    {/* Sr No column */}
+                                    <td className='px-4 py-4 border-b border-gray-200 font-medium text-zinc-700'>
+                                        {idx + 1}
+                                    </td>
+
+                                    {/* Data columns */}
                                     {columns.map((col) => (
                                         <td key={col} className='px-4 py-4 border-b border-gray-200'>
                                             {typeof row[col] === 'object' && row[col] !== null
@@ -62,6 +70,7 @@ const Result = ({ result, onClose }) => {
                                 </tr>
                             ))}
                         </tbody>
+
                     </table>
                 </div>
 
