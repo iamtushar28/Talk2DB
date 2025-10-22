@@ -1,8 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
-import { NextResponse } from "next/server"; // 👈 Import NextResponse
+import { NextResponse } from "next/server";
 
 // Initialize the Gemini AI client
-// The GEMINI_API_KEY must be stored in your .env.local file
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 // The model we will use for code generation
@@ -10,23 +9,26 @@ const GEMINI_MODEL = "gemini-2.5-flash";
 
 // Export a named function for the POST method
 export async function POST(request) {
-  // 👈 Use named export POST and access request directly
+  // Use named export POST and access request directly
   try {
     // Read the request body as JSON
     const body = await request.json();
 
     // Destructure data sent from the client
-    const { prompt, dbType, dbName } = body;
+    const { prompt, dbType, dbSchema } = body;
 
-    if (!prompt || !dbType || !dbName) {
+    if (!prompt || !dbType || !dbSchema) {
       return NextResponse.json(
-        { error: "Missing prompt, dbType, or dbName in the request body." },
+        {
+          error:
+            "Missing prompt, dbType, dbName or dbSchema in the request body.",
+        },
         { status: 400 }
       );
     }
 
     // Construct a clear, detailed prompt for Gemini
-    const fullPrompt = `Generate a working ${dbType} Query Language (MQL) query for a database named "${dbName}" that fulfills the request: "${prompt}". Output ONLY the raw MQL code.`;
+    const fullPrompt = `Generate a working ${dbType} Query Language (MQL) query for a database & schema ${dbSchema} that fulfills the request: "${prompt}". Output ONLY the raw MQL code.`;
 
     // Call the Gemini API
     const response = await ai.models.generateContent({

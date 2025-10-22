@@ -30,7 +30,8 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="h-16 px-4 w-full border-b border-zinc-200/60 flex justify-between items-center relative">
+    <nav className="h-16 px-2 md:px-4 w-full border-b border-zinc-200/60 flex justify-between items-center relative">
+
       {/* logo */}
       <Link href={'/'} className="text-2xl font-semibold text-zinc-900">Talk2DB</Link>
 
@@ -43,7 +44,7 @@ const Navbar = () => {
         {!user && (
           <Link
             href={'/signin'}
-            className='px-5 py-2 font-semibold text-white bg-violet-600 hover:bg-violet-500 rounded-lg flex gap-2 items-center cursor-pointer transition-all duration-300'
+            className='px-3 md:px-5 py-2 font-semibold text-white bg-violet-600 hover:bg-violet-500 rounded-lg flex gap-2 items-center cursor-pointer transition-all duration-300'
           >
             Sign In
             <IoMdArrowForward />

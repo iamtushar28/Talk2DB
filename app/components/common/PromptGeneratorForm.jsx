@@ -1,5 +1,3 @@
-// components/PromptGeneratorForm.jsx
-
 import React, { useState } from 'react';
 import { BsLightningCharge } from "react-icons/bs";
 import { toast, Toaster } from 'react-hot-toast';
@@ -21,7 +19,7 @@ const PromptGeneratorForm = ({ isConnected, setGeneratedQuery, user, dbConnectio
         setGeneratedQuery(''); // Clear previous query while generating
 
         // getting dbName
-        const dbName = dbConnectionData?.dbName || 'Unknown Database';
+        const dbSchema = dbConnectionData?.dbSchema || '';
 
         try {
             const response = await fetch('/api/gemini/generate-query', {
@@ -32,7 +30,7 @@ const PromptGeneratorForm = ({ isConnected, setGeneratedQuery, user, dbConnectio
                 body: JSON.stringify({
                     prompt: userQuery,
                     dbType: 'mongodb',
-                    dbName: dbName,
+                    dbSchema: dbSchema,
                 }),
             });
 
@@ -57,8 +55,9 @@ const PromptGeneratorForm = ({ isConnected, setGeneratedQuery, user, dbConnectio
 
     return (
         <>
-            {/* Query Input Box */}
+            {/* react toast notification */}
             <Toaster />
+            {/* Query Input Box */}
             <textarea
                 name="userQuery"
                 id="userQuery"

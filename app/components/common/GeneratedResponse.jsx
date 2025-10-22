@@ -1,67 +1,119 @@
-import React from 'react';
-import LightGrayButton from '../ui/LightGrayButton';
+import React, { useState } from 'react';
 import { IoPlayOutline } from "react-icons/io5";
-import { BiEditAlt } from "react-icons/bi";
-
-// 👈 Import the highlighter components
+import { PiSpinnerBold } from "react-icons/pi";
+import { BiShowAlt } from "react-icons/bi";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-// 👈 Import a dark, VS Code-like style
 import { dracula } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import Result from './Result';
+import ErrorMessage from '../ui/ErrorMessage';
 
-const GeneratedResponse = ({ query }) => {
+const GeneratedResponse = ({ query, dbConnectionData }) => {
+    const [result, setResult] = useState(null);
+    const [isRunning, setIsRunning] = useState(false);
+    const [error, setError] = useState(null);
+    const [showResult, setShowResult] = useState(false);
 
-    // Determine the language for highlighting (MQL is JavaScript/JSON)
     const language = 'javascript';
-
-    // Determine if the query is valid/non-empty
     const hasQuery = query && query.trim().length > 0;
+
+    // ✅ Handle query execution
+    const handleRunQuery = async () => {
+        if (!hasQuery || !dbConnectionData) return;
+
+        setIsRunning(true);
+        setError(null);
+        setResult(null);
+
+        try {
+            const res = await fetch('/api/mongodb/execute-query', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    query,
+                    dbConnectionData,
+                }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) throw new Error(data.error || 'Failed to execute query.');
+
+            setResult(data.result);
+            setShowResult(true);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setIsRunning(false);
+        }
+    };
 
     return (
         <div className='w-full md:w-[48%] flex flex-col gap-4'>
+            {/* Actions */}
+            <div className='w-full flex justify-between items-center'>
+                <h2 className='font-semibold text-sm'>Output</h2>
 
-            {/* actions */}
-            <div className='w-full flex justify-end'>
-                {/* run query (Disabled if no query) */}
-                <LightGrayButton
-                    title={'Run Query'}
-                    icon={<IoPlayOutline />}
-                    disabled={!hasQuery}
-                />
+                <div className='flex gap-2'>
+                    {/* Run Query */}
+                    <button
+                        onClick={handleRunQuery}
+                        disabled={!hasQuery || !dbConnectionData || isRunning}
+                        className={`px-2 md:px-4 py-2 text-sm font-semibold text-black bg-white hover:bg-zinc-100 rounded-lg flex gap-2 items-center cursor-pointer transition-all duration-300 disabled:cursor-not-allowed ${isRunning ? 'bg-zinc-100' : ''}`}
+                    >
+                        {isRunning ?
+                            <>
+                                Running
+                                <PiSpinnerBold className='text-xl animate-spin' />
+                            </>
+                            :
+                            <>
+                                Run Query
+                                <IoPlayOutline className='text-lg' />
+                            </>
+                        }
+                    </button>
 
-                {/* edit query (Disabled if no query) */}
-                <LightGrayButton
-                    title={'Edit'}
-                    icon={<BiEditAlt />}
-                    disabled={!hasQuery}
-                />
+                    {result && (
+                        <button
+                            onClick={() => setShowResult(true)}
+                            className='px-2 md:px-4 py-2 text-sm font-semibold text-black bg-white hover:bg-zinc-100 rounded-lg flex gap-2 items-center cursor-pointer transition-all duration-300'
+                        >
+                            Show Result
+                            <BiShowAlt className='text-lg' />
+                        </button>
+                    )}
+
+                </div>
             </div>
 
-            {/* response box */}
+            {/* Syntax Highlighter */}
             {hasQuery ? (
-                // RENDER SYNTAX HIGHLIGHTER
                 <SyntaxHighlighter
                     language={language}
-                    style={dracula} // Apply the VS Code-like theme
+                    style={dracula}
                     wrapLines={true}
                     customStyle={{
                         padding: '10px',
                         borderRadius: '6px',
                         fontSize: '14px',
-                        overflowX: 'auto', // Ensure horizontal scrolling for long lines
+                        overflowX: 'auto',
                     }}
                 >
                     {query}
                 </SyntaxHighlighter>
             ) : (
-                // Display placeholder when no query is available
                 <div className='w-full p-4 bg-gray-50 rounded-lg'>
                     <p className='text-zinc-500'>Generated query appears here...</p>
                 </div>
             )}
 
+            {/* <p>{error}</p> */}
+            {error && <ErrorMessage errorMessage={error} />}
 
-        </div >
+            {/* showing result modal for query execution output */}
+            {(result && showResult) && <Result result={result} onClose={() => setShowResult(false)} />}
+        </div>
     );
-}
+};
 
 export default GeneratedResponse;
