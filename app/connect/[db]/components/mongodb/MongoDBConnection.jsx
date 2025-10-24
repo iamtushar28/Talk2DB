@@ -6,10 +6,13 @@ import { collection, addDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { toast, Toaster } from 'react-hot-toast';
 import Link from 'next/link';
-import { PiSpinnerBold } from "react-icons/pi";
 import { useRouter } from "next/navigation";
+import SchemaDisplay from './SchemaDisplay';
+import ConnectionFormField from './ConnectionFormField';
+import ActionButton from './ActionButton';
 
 const MongoDBConnection = () => {
+    // STATE MANAGEMENT: Well-defined state variables for user session, UI loading, and schema data.
     const [userId, setUserId] = useState(null);
     const [isLoadingUser, setIsLoadingUser] = useState(true);
     const [dbSchema, setDbSchema] = useState('');
@@ -17,6 +20,8 @@ const MongoDBConnection = () => {
 
     const router = useRouter();
 
+    // SIDE EFFECT / AUTHENTICATION: Manages user session using Firebase onAuthStateChanged.
+    // RECOMMENDATION: Extract this logic into a custom `useAuth` hook for separation of concerns and reusability.
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -30,6 +35,7 @@ const MongoDBConnection = () => {
         return () => unsubscribe();
     }, []);
 
+    // FORM MANAGEMENT: Uses react-hook-form for efficient validation, state, and form handling.
     const {
         register,
         handleSubmit,
@@ -41,7 +47,8 @@ const MongoDBConnection = () => {
         mode: 'onBlur',
     });
 
-    // 🔹 Fetch schema from server
+    // Fetch schema from server
+    // API INTERACTION: Asynchronous handler for fetching the database schema from a Next.js API endpoint.
     const fetchSchema = async () => {
         const { dbName, connectionURL } = getValues();
 
@@ -74,7 +81,8 @@ const MongoDBConnection = () => {
         }
     };
 
-    // 🔹 Submit form
+    // Submit form
+    // DATA PERSISTENCE: Saves connection details and schema to Firebase Firestore.
     const onSubmit = async (data) => {
         if (!userId) {
             toast.error("Authentication error: User ID is missing.");
@@ -98,10 +106,12 @@ const MongoDBConnection = () => {
 
         } catch (e) {
             console.error("Error adding document: ", e);
+            // IMPROVEMENT: Include the specific error message (e.g., e.message) in the toast for better debugging.
             toast.error("Failed to save connection to Firebase.");
         }
     };
 
+    // CONDITIONAL RENDERING: Handles loading and unauthenticated states.
     if (isLoadingUser) {
         return <div className='w-full mt-4 text-center font-semibold'>Loading...</div>;
     }
@@ -117,91 +127,71 @@ const MongoDBConnection = () => {
 
     return (
         <>
+            {/* react toast notification */}
             <Toaster />
 
+            // FORM STRUCTURE: Parent component manages form submission via handleSubmit.
             <form className="w-full mt-4 flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
 
-                {/* db name */}
-                <div>
-                    <label htmlFor="dbName" className='font-semibold'>Name</label>
-                    <input
-                        type="text"
-                        id='dbName'
-                        placeholder='Database Name e.g. Acme DB'
-                        {...register('dbName', { required: 'Database name is required', minLength: { value: 3, message: 'Must be at least 3 characters' } })}
-                        className={`w-full h-12 mt-2 p-3 border rounded-lg outline-none ring-violet-500 ${errors.dbName ? 'border-red-500' : 'border-zinc-300 hover:ring-2'}`}
-                    />
-                    {errors.dbName && <p className="text-red-500 text-sm mt-1">{errors.dbName.message}</p>}
-                </div>
+                {/* 1. DB Name Field (Using the new component) */}
+                // REUSABILITY: Utilizes ConnectionFormField for a clean, encapsulated input field display and error handling.
+                <ConnectionFormField
+                    id="dbName"
+                    label="Name"
+                    placeholder="Database Name e.g. Acme DB"
+                    register={register('dbName', {
+                        required: 'Database name is required',
+                        minLength: { value: 3, message: 'Must be at least 3 characters' }
+                    })}
+                    errorMessage={errors.dbName?.message}
+                />
 
-                {/* connection url */}
-                <div>
-                    <label htmlFor="connectionURL" className='font-semibold'>Connection URL</label>
-                    <textarea
-                        id="connectionURL"
-                        placeholder='Connection URL e.g. mongodb://username:password@host:port/database'
-                        {...register('connectionURL', {
-                            required: 'Connection URL is required',
-                            pattern: { value: /^mongodb(\+srv)?:\/\/.+/, message: 'Invalid MongoDB URL' }
-                        })}
-                        className={`w-full h-28 mt-2 p-3 border rounded-lg outline-none ring-violet-500 ${errors.connectionURL ? 'border-red-500' : 'border-zinc-300 hover:ring-2'}`}
-                    />
-                    {errors.connectionURL && <p className="text-red-500 text-sm mt-1">{errors.connectionURL.message}</p>}
-                </div>
+                {/* 2. Connection URL Field (Using the new component) */}
+                // VALIDATION: Includes a regex pattern for basic MongoDB connection string format checking.
+                <ConnectionFormField
+                    id="connectionURL"
+                    label="Connection URL"
+                    placeholder="Connection URL e.g. mongodb://..."
+                    register={register('connectionURL', {
+                        required: 'Connection URL is required',
+                        pattern: { value: /^mongodb(\+srv)?:\/\/.+/, message: 'Invalid MongoDB URL' }
+                    })}
+                    errorMessage={errors.connectionURL?.message}
+                    isTextarea={true}
+                />
 
                 {/* get schema */}
                 {!dbSchema && (
                     <div className='flex justify-end'>
-                        <button
+                        // REUSABILITY: ActionButton abstracts loading state and styling.
+                        // DEPENDENCY: Button is disabled if schema fetching is in progress or client-side validation fails (`!isValid`).
+                        <ActionButton
                             type="button"
                             onClick={fetchSchema}
-                            disabled={isFetchingSchema}
-                            className={`mt-2 py-2 px-4 text-white font-semibold rounded-lg bg-violet-600 hover:bg-violet-700 cursor-pointer flex gap-2 items-center disabled:opacity-60`}
+                            isDisabled={isFetchingSchema || !isValid}
+                            isLoading={isFetchingSchema}
                         >
-                            {isFetchingSchema ?
-                                <>
-                                    Fetching
-                                    <PiSpinnerBold className='text-xl animate-spin' />
-                                </>
-                                :
-                                <>
-                                    Get DB Schema
-                                </>
-                            }
-                        </button>
+                            Get DB Schema
+                        </ActionButton>
                     </div>
                 )}
 
                 {/* schema display */}
                 {dbSchema && (
-                    <div>
-                        <label className='font-semibold'>Detected Schema</label>
-                        <textarea
-                            readOnly
-                            value={dbSchema}
-                            className={`w-full h-44 mt-2 p-3 border rounded-lg outline-none ring-violet-500 border-zinc-300 hover:ring-2`}
-                        />
-                    </div>
+                    // REUSABILITY: Uses SchemaDisplay component to separate presentation logic for the schema textarea.
+                    <SchemaDisplay dbSchema={dbSchema} />
                 )}
 
+                // CONDITIONAL RENDERING: The submission button is only visible after a schema has been successfully fetched.
                 {dbSchema && (
                     <div className='w-full flex justify-end'>
-                        <button
+                        <ActionButton
                             type="submit"
-                            disabled={isSubmitting || !isValid}
-                            className={`mt-2 py-2 px-4 text-white font-semibold rounded-lg bg-violet-600 hover:bg-violet-700 flex gap-2 items-center ${isSubmitting || !isValid ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            isDisabled={isSubmitting || !isValid}
+                            isLoading={isSubmitting}
                         >
-                            {isSubmitting ?
-                                <>
-                                    Connecting
-                                    <PiSpinnerBold className='text-xl animate-spin' />
-                                </>
-                                :
-                                <>
-                                    Connect DB
-                                </>
-                            }
-                        </button>
+                            Connect DB
+                        </ActionButton>
                     </div>
                 )}
             </form>

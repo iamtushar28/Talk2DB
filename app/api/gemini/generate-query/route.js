@@ -1,63 +1,91 @@
 import { GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
 
-// Initialize the Gemini AI client
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+// --- Configuration and Initialization ---
 
-// The model we will use for code generation
+// Initialize the Gemini AI client using the API key from environment variables.
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+// Destructure the models object for direct access to methods.
+const { generateContent } = ai.models;
+
+// The model chosen for reliable, fast code generation.
 const GEMINI_MODEL = "gemini-2.5-flash";
 
-// Export a named function for the POST method
+/**
+ * @fileoverview Next.js API route to generate MongoDB Query Language (MQL)
+ * queries using the Gemini API, based on a natural language prompt and a database schema.
+ */
 export async function POST(request) {
-  // Use named export POST and access request directly
   try {
-    // Read the request body as JSON
+    // 1. Input Parsing and Validation
     const body = await request.json();
-
-    // Destructure data sent from the client
     const { prompt, dbType, dbSchema } = body;
 
     if (!prompt || !dbType || !dbSchema) {
       return NextResponse.json(
         {
           error:
-            "Missing prompt, dbType, dbName or dbSchema in the request body.",
+            "Missing required fields (prompt, dbType, or dbSchema) in the request body.",
         },
         { status: 400 }
       );
     }
 
-    // Construct a clear, detailed prompt for Gemini
-    const fullPrompt = `Generate a working ${dbType} Query Language (MQL) query for a database & schema ${dbSchema} that fulfills the request: "${prompt}". Output ONLY the raw MQL code.`;
+    // 2. Prompt Construction
+    // Construct a clear, detailed system prompt that instructs Gemini to act as a code generator.
+    // The prompt is minimized and the schema is compact (no pretty-printing) to save tokens.
+    const fullPrompt = `Generate a working ${dbType} Query (MQL) query. SCHEMA: ${JSON.stringify(
+      dbSchema
+    )} PROMPT: "${prompt}". Output ONLY raw MQL code, no explanation or markdown.`;
 
-    // Call the Gemini API
-    const response = await ai.models.generateContent({
+    // 3. Call the Gemini API for Query Generation
+    const response = await generateContent({
       model: GEMINI_MODEL,
       contents: fullPrompt,
       config: {
-        // temperature: 0.1, // Using a low temperature for code generation
+        // Use a low temperature for deterministic, reliable code generation.
+        temperature: 0.1,
       },
     });
 
-    // Clean up the text: remove any markdown or excessive whitespace
+    // 4. Post-processing and Cleanup
     let generatedQuery = response.text.trim();
+
+    // Aggressively clean up output: remove markdown code block wrappers
     if (generatedQuery.startsWith("```")) {
-      generatedQuery = generatedQuery.substring(
-        generatedQuery.indexOf("\n") + 1
-      );
-      generatedQuery = generatedQuery
-        .substring(0, generatedQuery.lastIndexOf("```"))
-        .trim();
+      // Find the end of the language identifier line (e.g., '```javascript')
+      const firstNewlineIndex = generatedQuery.indexOf("\n");
+      // Find the last triple backtick sequence
+      const lastTripleBacktickIndex = generatedQuery.lastIndexOf("```");
+
+      if (
+        firstNewlineIndex !== -1 &&
+        lastTripleBacktickIndex !== -1 &&
+        lastTripleBacktickIndex > firstNewlineIndex
+      ) {
+        // Extract the content between the first newline and the final ```
+        generatedQuery = generatedQuery
+          .substring(firstNewlineIndex + 1, lastTripleBacktickIndex)
+          .trim();
+      } else {
+        // Simple cleanup if structure is unexpected (e.g., '```query')
+        generatedQuery = generatedQuery
+          .replace(/```[a-z]*\s*|\s*```/g, "")
+          .trim();
+      }
     }
 
-    // Send the generated query back to the client using NextResponse.json
+    // 5. Success Response
     return NextResponse.json({ query: generatedQuery }, { status: 200 });
   } catch (error) {
+    // 6. Error Handling
     console.error("Gemini Query Generation Error:", error);
 
-    // Return a 500 response using NextResponse.json
     return NextResponse.json(
-      { error: "Failed to generate query. Check API key and server logs." },
+      {
+        error:
+          "Failed to generate query. Check API key, environment variables, and server logs.",
+      },
       { status: 500 }
     );
   }

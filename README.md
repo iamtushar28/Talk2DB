@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🧠 Talk2AI
 
-## Getting Started
+**Talk2AI** is a smart, AI-powered automation tool built with **Next.js** that lets users interact with databases using **natural language** instead of complex queries.  
+Simply type prompts like:
 
-First, run the development server:
+> “Show all users who published blogs”
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+and Talk2AI will automatically generate the corresponding database query, highlight it for review, and execute it safely — showing the results in a structured table.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 🚀 Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- 💬 **Natural Language Querying** – Type what you want in plain English.
+- 🧠 **AI-Powered Query Generation** – Automatically converts your prompt into a valid database query.
+- 🔒 **Safe Execution Layer** – Only allows read-only operations (`find`, `aggregate`, `countDocuments`, etc.).
+- 🗄️ **MongoDB Integration** – Connect your MongoDB database easily.
+- ⚙️ **Future-Ready** – MySQL and other database support planned.
+- 🧾 **Visual Output** – See results in a clean, tabular format.
+- 🧍‍♂️ **User-Controlled** – Review and run queries manually before execution.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## ⚙️ How It Works
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. User enters a **prompt** (e.g., “List top 10 blogs by views”).
+2. AI converts the prompt into a valid **MongoDB query**.
+3. The generated query is **highlighted** for the user.
+4. User confirms and executes the query.
+5. Results are fetched through a **secure read-only API** and displayed in a table.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🔒 Security
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Talk2AI ensures all database operations are **read-only**.  
+It blocks any write, update, or delete queries (e.g., `insertOne`, `updateMany`, `deleteOne`, etc.) — protecting your data while allowing exploration.
+
+Allowed operations:
+- `find()`
+- `findOne()`
+- `aggregate()`
+- `countDocuments()`
+- `distinct()`
+- `estimatedDocumentCount()`
+
+---
+
+# Working...
