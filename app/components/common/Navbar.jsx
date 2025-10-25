@@ -8,6 +8,7 @@ import Image from "next/image";
 import { IoMdArrowForward } from "react-icons/io";
 import ProfileBanner from "./ProfileBanner";
 import Link from "next/link";
+import Logo from "../ui/Logo";
 
 const Navbar = () => {
   const [showProfileBanner, setShowProfileBanner] = useState(false);
@@ -24,12 +25,10 @@ const Navbar = () => {
   return (
     <nav className="h-16 px-2 md:px-4 w-full border-b border-zinc-200/60 flex justify-between items-center relative">
       {/* logo */}
-      <Link href="/" className="text-2xl font-semibold text-zinc-900">
-        Talk2DB
-      </Link>
+      <Logo />
 
       <div className="flex gap-2 md:gap-4 items-center">
-      
+
         {/* Show "Sign In" button if no user */}
         {!user && !isLoadingUser && (
           <Link
