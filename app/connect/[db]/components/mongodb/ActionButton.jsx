@@ -11,7 +11,7 @@ const ActionButton = ({
 }) => {
     // Base styles for the button
     const baseClasses = `
-        py-2 px-4 text-white font-semibold rounded-lg 
+        py-2 px-4 text-white font-semibold rounded-3xl 
         bg-violet-600 hover:bg-violet-700 
         flex gap-2 items-center justify-center transition-colors
         ${fullWidth ? 'w-full' : ''}

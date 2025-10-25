@@ -1,5 +1,5 @@
-import Navbar from "./components/common/Navbar";
 import "./globals.css";
+import ClientWrapper from "@/redux-store/providers/ClientWrapper";
 
 export const metadata = {
   title: "Create Next App",
@@ -10,8 +10,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Navbar />
-        {children}
+        <ClientWrapper>{children}</ClientWrapper>
       </body>
     </html>
   );

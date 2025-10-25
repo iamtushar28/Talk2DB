@@ -1,8 +1,13 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { SiMongodb } from "react-icons/si";
+import { setSelectedDb } from '@/redux-store/dbConnectionsSlice';
 
-const MongoDbSelector = ({ dbConnections = [], selectedDb, setSelectedDb }) => {
+const MongoDbSelector = () => {
+    const dispatch = useDispatch();
+    const { connections, selectedDb } = useSelector((state) => state.dbConnections);
+
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
 
@@ -18,7 +23,7 @@ const MongoDbSelector = ({ dbConnections = [], selectedDb, setSelectedDb }) => {
     }, []);
 
     const handleSelect = (db) => {
-        setSelectedDb(db);
+        dispatch(setSelectedDb(db)); // ✅ update Redux state
         setIsOpen(false);
     };
 
@@ -27,27 +32,29 @@ const MongoDbSelector = ({ dbConnections = [], selectedDb, setSelectedDb }) => {
             {/* Selected DB */}
             <div
                 onClick={() => setIsOpen(!isOpen)}
-                className="pl-2 pr-3 py-2 text-sm font-semibold text-black rounded-lg flex gap-1 items-center border border-gray-200 cursor-pointer"
+                className="pl-2 pr-3 py-2 text-sm font-semibold text-black rounded-full flex gap-1 items-center border border-gray-200 cursor-pointer"
             >
                 <SiMongodb className="text-xl text-green-600" />
-                MongoDB: {selectedDb?.dbName}
+                MongoDB: {selectedDb?.dbName || 'Select DB'}
             </div>
 
             {/* Dropdown list */}
             {isOpen && (
-                <div className="absolute bottom-full mb-2 left-0 w-56 max-h-72 p-2 bg-white border border-gray-200 rounded-lg shadow flex flex-col overflow-y-auto z-50">
-                    {dbConnections.map((db) => (
+                <div className="absolute bottom-full mb-2 left-0 w-56 max-h-72 p-2 bg-white border border-gray-200 rounded-2xl shadow flex flex-col overflow-y-auto z-50">
+                    {connections.map((db) => (
                         <button
                             key={db.id}
                             onClick={() => handleSelect(db)}
-                            className="w-full px-3 py-2 text-start hover:bg-zinc-100 rounded-lg cursor-pointer"
+                            className="w-full px-3 py-2 text-start hover:bg-zinc-100 rounded-full cursor-pointer"
                         >
                             {db.dbName}
                         </button>
                     ))}
+                    {connections.length === 0 && (
+                        <div className="px-3 py-2 text-zinc-500">No connections available</div>
+                    )}
                 </div>
             )}
-
         </div>
     );
 };

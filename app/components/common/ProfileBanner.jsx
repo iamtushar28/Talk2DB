@@ -35,7 +35,7 @@ const ProfileBanner = ({ user, onClose, signOut }) => {
     return (
         <div
             ref={bannerRef}
-            className="w-72 h-fit p-3 bg-white shadow-lg border border-zinc-300 rounded-lg absolute top-[58px] right-4 z-50"
+            className="w-72 h-fit p-3 bg-white shadow-lg border border-zinc-300 rounded-2xl absolute top-[58px] right-4 z-50"
         >
             {/* user email */}
             <p className="font-semibold max-w-72 truncate flex gap-1 items-center">
@@ -51,7 +51,7 @@ const ProfileBanner = ({ user, onClose, signOut }) => {
                 <Link
                     key={index}
                     href={option.link}
-                    className="w-full p-2 text-start hover:bg-zinc-100 rounded-lg transition-all duration-300 cursor-pointer block"
+                    className="w-full pl-3 py-2 text-start hover:bg-zinc-100 rounded-full transition-all duration-300 cursor-pointer block"
                 >
                     {option.label}
                 </Link>
@@ -60,7 +60,7 @@ const ProfileBanner = ({ user, onClose, signOut }) => {
             {/* sign out */}
             <button
                 onClick={signOut}
-                className="w-full p-2 text-start hover:bg-zinc-100 rounded-lg transition-all duration-300 cursor-pointer block"
+                className="w-full pl-3 py-2 text-start hover:bg-zinc-100 rounded-full transition-all duration-300 cursor-pointer block"
             >
                 Sign Out
             </button>

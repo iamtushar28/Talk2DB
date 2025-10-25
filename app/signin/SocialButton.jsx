@@ -4,7 +4,7 @@ const SocialButton = ({ icon: Icon, text, onClick, iconColor, borderColor }) => 
   return (
     <button
       onClick={onClick}
-      className={`h-12 w-full md:w-[45%] border rounded hover:bg-zinc-100 text-center text-sm font-semibold relative transition-all duration-200 flex items-center justify-center cursor-pointer`}
+      className={`h-12 w-full md:w-[45%] border rounded-3xl hover:bg-zinc-100 text-center text-sm font-semibold relative transition-all duration-200 flex items-center justify-center cursor-pointer`}
       style={{ borderColor: borderColor || "#d4d4d8" }} // default zinc-300
     >
       <Icon

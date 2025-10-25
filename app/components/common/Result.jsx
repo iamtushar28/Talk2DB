@@ -25,7 +25,7 @@ const Result = ({ result, onClose }) => {
 
     return (
         <div className='h-screen w-full bg-black/30 fixed top-0 left-0 flex justify-center items-center overflow-auto p-4'>
-            <div className='w-full max-w-6xl h-fit px-4 py-8 bg-white rounded-lg flex flex-col gap-4 relative'>
+            <div className='w-full max-w-6xl h-fit px-4 py-8 bg-white rounded-3xl flex flex-col gap-4 relative'>
 
                 {/* Close button */}
                 <button

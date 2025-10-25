@@ -32,11 +32,9 @@ export async function POST(request) {
     }
 
     // 2. Prompt Construction
-    // Construct a clear, detailed system prompt that instructs Gemini to act as a code generator.
-    // The prompt is minimized and the schema is compact (no pretty-printing) to save tokens.
-    const fullPrompt = `Generate a working ${dbType} Query (MQL) query. SCHEMA: ${JSON.stringify(
+    const fullPrompt = `Generate an optimized ${dbType.toUpperCase()} query using the following schema: ${JSON.stringify(
       dbSchema
-    )} PROMPT: "${prompt}". Output ONLY raw MQL code, no explanation or markdown.`;
+    )}. Prompt: "${prompt}". Return ONLY the raw query, no explanations or markdown.`;
 
     // 3. Call the Gemini API for Query Generation
     const response = await generateContent({

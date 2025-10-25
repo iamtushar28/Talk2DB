@@ -48,17 +48,17 @@ const GeneratedResponse = ({ query, dbConnectionData }) => {
     };
 
     return (
-        <div className='w-full md:w-[48%] flex flex-col gap-4'>
+        <div className='w-full md:w-[48%] flex flex-col gap-1'>
             {/* Actions */}
             <div className='w-full flex justify-between items-center'>
                 <h2 className='font-semibold text-sm'>Output</h2>
 
-                <div className='flex gap-2'>
+                <div className='flex gap-1'>
                     {/* Run Query */}
                     <button
                         onClick={handleRunQuery}
-                        disabled={!hasQuery || !dbConnectionData }
-                        className={`px-2 md:px-4 py-2 text-sm font-semibold text-black bg-white hover:bg-zinc-100 rounded-lg flex gap-2 items-center cursor-pointer transition-all duration-300 disabled:cursor-not-allowed disabled:text-zinc-400 disabled:hover:bg-white ${isRunning ? 'bg-zinc-100' : ''}`}
+                        disabled={!hasQuery || !dbConnectionData}
+                        className={`px-2 md:px-4 py-2 text-sm font-semibold text-black bg-white hover:bg-zinc-100 rounded-3xl flex gap-2 items-center cursor-pointer transition-all duration-300 disabled:cursor-not-allowed disabled:text-zinc-400 disabled:hover:bg-white ${isRunning ? 'bg-zinc-100' : ''}`}
                     >
                         {isRunning ?
                             <>
@@ -76,7 +76,7 @@ const GeneratedResponse = ({ query, dbConnectionData }) => {
                     <button
                         onClick={() => setShowResult(true)}
                         disabled={!result}
-                        className='px-2 md:px-4 py-2 text-sm font-semibold text-black bg-white hover:bg-zinc-100 rounded-lg flex gap-2 items-center cursor-pointer transition-all duration-300 disabled:cursor-not-allowed disabled:text-zinc-400 disabled:hover:bg-white'
+                        className='px-2 md:px-4 py-2 text-sm font-semibold text-black bg-white hover:bg-zinc-100 rounded-3xl flex gap-2 items-center cursor-pointer transition-all duration-300 disabled:cursor-not-allowed disabled:text-zinc-400 disabled:hover:bg-white'
                     >
                         Show Result
                         <BiShowAlt className='text-lg' />
@@ -92,8 +92,8 @@ const GeneratedResponse = ({ query, dbConnectionData }) => {
                     style={dracula}
                     wrapLines={true}
                     customStyle={{
-                        padding: '10px',
-                        borderRadius: '6px',
+                        padding: '16px',
+                        borderRadius: '24px',
                         fontSize: '14px',
                         overflowX: 'auto',
                     }}
@@ -101,7 +101,7 @@ const GeneratedResponse = ({ query, dbConnectionData }) => {
                     {query}
                 </SyntaxHighlighter>
             ) : (
-                <div className='w-full p-4 bg-gray-50 rounded-lg'>
+                <div className='w-full p-4 bg-gray-50 rounded-full'>
                     <p className='text-zinc-500'>Generated query appears here...</p>
                 </div>
             )}

@@ -1,73 +1,24 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth, db } from '@/lib/firebase';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+'use client'
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchDbConnections } from "@/redux-store/dbConnectionsSlice";
 
-import QueryInputBox from './QueryInputBox';
-import GeneratedResponse from './GeneratedResponse';
+import QueryInputBox from "./QueryInputBox";
+import GeneratedResponse from "./GeneratedResponse";
 
 const Hero = () => {
-    const [user, setUser] = useState(null);
-    const [isLoadingUser, setIsLoadingUser] = useState(true);
+    const dispatch = useDispatch();
+    const { user } = useSelector((state) => state.auth);
+    const { selectedDb, isLoading } = useSelector((state) => state.dbConnections);
 
-    // Multiple MongoDB connections
-    const [dbConnections, setDbConnections] = useState([]);
-    const [selectedDb, setSelectedDb] = useState(null);
-    const [isLoadingConnection, setIsLoadingConnection] = useState(true);
+    const [generatedQuery, setGeneratedQuery] = React.useState("");
 
-    // Query result
-    const [generatedQuery, setGeneratedQuery] = useState('');
-
-    // ✅ Watch Firebase Auth state
+    // Fetch DB connections when user changes
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser);
-            setIsLoadingUser(false);
-        });
-        return () => unsubscribe();
-    }, []);
-
-    // ✅ Fetch all DB connections for the logged-in user
-    useEffect(() => {
-        const fetchConnections = async () => {
-            if (!user) {
-                setIsLoadingConnection(false);
-                return;
-            }
-
-            try {
-                const connectionsRef = collection(db, 'mongodb_connections');
-                const q = query(connectionsRef, where('userId', '==', user.uid));
-                const snapshot = await getDocs(q);
-
-                const data = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-
-                setDbConnections(data);
-
-                // Auto-select first DB if available
-                if (data.length > 0) setSelectedDb(data[0]);
-            } catch (error) {
-                console.error('Error fetching MongoDB connections:', error);
-            } finally {
-                setIsLoadingConnection(false);
-            }
-        };
-
-        fetchConnections();
-    }, [user]);
-
-    const handleSetQuery = (query) => {
-        setGeneratedQuery(query);
-    };
-
-    const handleDbSelect = (dbId) => {
-        const selected = dbConnections.find(conn => conn.id === dbId);
-        setSelectedDb(selected);
-    };
+        if (user?.uid) {
+            dispatch(fetchDbConnections(user.uid));
+        }
+    }, [user, dispatch]);
 
     return (
         <div className="w-full h-fit py-16 flex flex-col gap-10 justify-center items-center">
@@ -84,24 +35,17 @@ const Hero = () => {
 
             {/* query input & result section */}
             <div className="w-full px-4 flex flex-col md:flex-row justify-center gap-12 md:gap-6">
-                {/* Query Input */}
                 <QueryInputBox
                     user={user}
                     isConnected={!!selectedDb}
-                    isLoadingConnection={isLoadingConnection}
-                    dbConnections={dbConnections}   // pass all
-                    selectedDb={selectedDb}          // pass selected
-                    setSelectedDb={setSelectedDb}    // allow child to update
-                    setGeneratedQuery={handleSetQuery}
+                    isLoadingConnection={isLoading}
+                    selectedDb={selectedDb}
+                    setGeneratedQuery={setGeneratedQuery}
                 />
 
-
-                {/* Generated Query Display */}
                 <GeneratedResponse
-                    user={user}
                     query={generatedQuery}
                     dbConnectionData={selectedDb}
-                    isConnected={!!selectedDb}
                 />
             </div>
         </div>

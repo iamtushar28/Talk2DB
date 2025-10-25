@@ -130,11 +130,11 @@ const MongoDBConnection = () => {
             {/* react toast notification */}
             <Toaster />
 
-            // FORM STRUCTURE: Parent component manages form submission via handleSubmit.
+            {/* // FORM STRUCTURE: Parent component manages form submission via handleSubmit. */}
             <form className="w-full mt-4 flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
 
                 {/* 1. DB Name Field (Using the new component) */}
-                // REUSABILITY: Utilizes ConnectionFormField for a clean, encapsulated input field display and error handling.
+                {/* // REUSABILITY: Utilizes ConnectionFormField for a clean, encapsulated input field display and error handling. */}
                 <ConnectionFormField
                     id="dbName"
                     label="Name"
@@ -147,7 +147,7 @@ const MongoDBConnection = () => {
                 />
 
                 {/* 2. Connection URL Field (Using the new component) */}
-                // VALIDATION: Includes a regex pattern for basic MongoDB connection string format checking.
+                {/* // VALIDATION: Includes a regex pattern for basic MongoDB connection string format checking. */}
                 <ConnectionFormField
                     id="connectionURL"
                     label="Connection URL"
@@ -163,8 +163,8 @@ const MongoDBConnection = () => {
                 {/* get schema */}
                 {!dbSchema && (
                     <div className='flex justify-end'>
-                        // REUSABILITY: ActionButton abstracts loading state and styling.
-                        // DEPENDENCY: Button is disabled if schema fetching is in progress or client-side validation fails (`!isValid`).
+                        {/* // REUSABILITY: ActionButton abstracts loading state and styling. */}
+                        {/* // DEPENDENCY: Button is disabled if schema fetching is in progress or client-side validation fails (`!isValid`). */}
                         <ActionButton
                             type="button"
                             onClick={fetchSchema}
@@ -182,7 +182,7 @@ const MongoDBConnection = () => {
                     <SchemaDisplay dbSchema={dbSchema} />
                 )}
 
-                // CONDITIONAL RENDERING: The submission button is only visible after a schema has been successfully fetched.
+                {/* // CONDITIONAL RENDERING: The submission button is only visible after a schema has been successfully fetched. */}
                 {dbSchema && (
                     <div className='w-full flex justify-end'>
                         <ActionButton

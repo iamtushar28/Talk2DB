@@ -2,7 +2,7 @@ import React from 'react';
 
 const ConnectionFormField = ({ id, label, type = 'text', placeholder, register, errorMessage, isTextarea = false }) => {
     const InputComponent = isTextarea ? 'textarea' : 'input';
-    const baseClasses = `w-full mt-2 p-3 border rounded-lg outline-none ring-violet-500`;
+    const baseClasses = `w-full mt-2 p-3 border rounded-xl outline-none ring-violet-500`;
     const errorClass = errorMessage ? 'border-red-500' : 'border-zinc-300 hover:ring-2';
     const heightClass = isTextarea ? 'h-28' : 'h-12';
 
