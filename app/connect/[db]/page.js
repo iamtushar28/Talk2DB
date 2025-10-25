@@ -1,5 +1,5 @@
-import DatabaseConnectionMethod from "./components/DatabaseConnectionMethod";
 import MongoDBConnection from "./components/mongodb/MongoDBConnection";
+import MySQLConnection from "./components/mysql/MySQLConnection";
 
 // Mark the Page component as 'async'
 export default async function Page({ params }) {
@@ -19,7 +19,7 @@ export default async function Page({ params }) {
         </h1>
 
         {/* Conditionally render based on selected DB */}
-        {dbName === "mysql" && <DatabaseConnectionMethod />}
+        {dbName === "mysql" && <MySQLConnection />}
 
         {dbName === "mongodb" && <MongoDBConnection />}
       </div>

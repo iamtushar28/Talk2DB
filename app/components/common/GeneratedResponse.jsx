@@ -7,16 +7,24 @@ import { dracula } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import Result from './Result';
 import ErrorMessage from '../ui/ErrorMessage';
 
+/**
+ * Component: GeneratedResponse
+ * Purpose: Displays the generated query, allows execution,
+ * and shows the query result or error.
+ */
 const GeneratedResponse = ({ query, dbConnectionData }) => {
-    const [result, setResult] = useState(null);
-    const [isRunning, setIsRunning] = useState(false);
-    const [error, setError] = useState(null);
-    const [showResult, setShowResult] = useState(false);
+    // Local state management
+    const [result, setResult] = useState(null);     // Query execution result
+    const [isRunning, setIsRunning] = useState(false); // Loader state while running query
+    const [error, setError] = useState(null);       // Error message if query fails
+    const [showResult, setShowResult] = useState(false); // Controls visibility of result modal
 
-    const language = 'javascript';
-    const hasQuery = query && query.trim().length > 0;
+    const language = 'javascript'; // Syntax highlighting language
+    const hasQuery = query && query.trim().length > 0; // Validate non-empty query
 
-    // ✅ Handle query execution
+    /**
+     * Executes the generated query against backend API
+     */
     const handleRunQuery = async () => {
         if (!hasQuery || !dbConnectionData) return;
 
@@ -25,7 +33,11 @@ const GeneratedResponse = ({ query, dbConnectionData }) => {
         setResult(null);
 
         try {
-            const res = await fetch('/api/mongodb/execute-query', {
+            // Construct route dynamically
+            const dbType = dbConnectionData.dbType || 'mongodb'; // fallback
+            const route = `/api/${dbType}/execute-query`;
+
+            const res = await fetch(route, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -49,44 +61,45 @@ const GeneratedResponse = ({ query, dbConnectionData }) => {
 
     return (
         <div className='w-full md:w-[48%] flex flex-col gap-1'>
-            {/* Actions */}
+            {/* ===== Header Actions ===== */}
             <div className='w-full flex justify-between items-center'>
                 <h2 className='font-semibold text-sm'>Output</h2>
 
                 <div className='flex gap-1'>
-                    {/* Run Query */}
+                    {/* Run Query Button */}
                     <button
                         onClick={handleRunQuery}
                         disabled={!hasQuery || !dbConnectionData}
-                        className={`px-2 md:px-4 py-2 text-sm font-semibold text-black bg-white hover:bg-zinc-100 rounded-3xl flex gap-2 items-center cursor-pointer transition-all duration-300 disabled:cursor-not-allowed disabled:text-zinc-400 disabled:hover:bg-white ${isRunning ? 'bg-zinc-100' : ''}`}
+                        className={`px-3 md:px-4 py-2 text-sm font-semibold text-black bg-white hover:bg-zinc-100 rounded-3xl flex gap-2 items-center cursor-pointer transition-all duration-300 disabled:cursor-not-allowed disabled:text-zinc-400 disabled:hover:bg-white ${isRunning ? 'bg-zinc-100' : ''}`}
                     >
-                        {isRunning ?
+                        {isRunning ? (
                             <>
                                 Running
                                 <PiSpinnerBold className='text-xl animate-spin' />
                             </>
-                            :
+                        ) : (
                             <>
                                 Run Query
                                 <IoPlayOutline className='text-lg' />
                             </>
-                        }
+                        )}
                     </button>
 
+                    {/* Show Result Button */}
                     <button
                         onClick={() => setShowResult(true)}
                         disabled={!result}
-                        className='px-2 md:px-4 py-2 text-sm font-semibold text-black bg-white hover:bg-zinc-100 rounded-3xl flex gap-2 items-center cursor-pointer transition-all duration-300 disabled:cursor-not-allowed disabled:text-zinc-400 disabled:hover:bg-white'
+                        className='px-3 md:px-4 py-2 text-sm font-semibold text-black bg-white hover:bg-zinc-100 rounded-3xl flex gap-2 items-center cursor-pointer transition-all duration-300 disabled:cursor-not-allowed disabled:text-zinc-400 disabled:hover:bg-white'
                     >
                         Show Result
                         <BiShowAlt className='text-lg' />
                     </button>
-
                 </div>
             </div>
 
-            {/* Syntax Highlighter */}
+            {/* ===== Query Display ===== */}
             {hasQuery ? (
+                // Display generated query with syntax highlighting
                 <SyntaxHighlighter
                     language={language}
                     style={dracula}
@@ -101,16 +114,22 @@ const GeneratedResponse = ({ query, dbConnectionData }) => {
                     {query}
                 </SyntaxHighlighter>
             ) : (
+                // Placeholder text when no query is generated
                 <div className='w-full p-4 bg-gray-50 rounded-full'>
                     <p className='text-zinc-500'>Generated query appears here...</p>
                 </div>
             )}
 
-            {/* <p>{error}</p> */}
+            {/* ===== Error Message ===== */}
             {error && <ErrorMessage errorMessage={error} />}
 
-            {/* showing result modal for query execution output */}
-            {(result && showResult) && <Result result={result} onClose={() => setShowResult(false)} />}
+            {/* ===== Result Modal ===== */}
+            {(result && showResult) && (
+                <Result
+                    result={result}
+                    onClose={() => setShowResult(false)}
+                />
+            )}
         </div>
     );
 };

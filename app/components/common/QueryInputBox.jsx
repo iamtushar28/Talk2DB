@@ -2,8 +2,13 @@ import React from 'react';
 import Link from 'next/link';
 import { LuDatabase } from "react-icons/lu";
 import PromptGeneratorForm from './PromptGeneratorForm';
-import MongoDbSelector from './MongoDbSelector';
+import DbSelector from './DbSelector';
 
+/**
+ * Component: QueryInputBox
+ * Purpose: Displays the query input area, handles database connection state, 
+ * and provides access to the prompt generator form.
+ */
 const QueryInputBox = ({
     user,
     setGeneratedQuery,
@@ -11,7 +16,10 @@ const QueryInputBox = ({
     isConnected,
     isLoadingConnection
 }) => {
-    // Show loading skeleton
+    /**
+     * Loading State
+     * Displays a skeleton placeholder while database connections are being fetched.
+     */
     if (isLoadingConnection) {
         return (
             <div className='w-full md:w-[48%] flex flex-col gap-4'>
@@ -28,26 +36,28 @@ const QueryInputBox = ({
 
     return (
         <div className='w-full md:w-[48%] flex flex-col gap-4'>
-            {/* Title */}
+            {/* Section Title */}
             <h4 className='font-semibold'>Instruction</h4>
 
-            {/* Prompt Form */}
+            {/* Prompt Generator Form 
+                Allows users to input a natural language prompt 
+                and generate a corresponding database query. */}
             <PromptGeneratorForm
                 isConnected={isConnected}
                 setGeneratedQuery={setGeneratedQuery}
                 user={user}
-                dbConnectionData={selectedDb} // ✅ use selectedDb here
+                dbConnectionData={selectedDb}
             />
 
-            {/* Connection Status */}
+            {/* Database Connection Status Section */}
             <div className='flex gap-4 items-center'>
                 <h2 className='font-semibold'>Connection:</h2>
 
                 {user && isConnected ? (
-                    // ✅ Connected State
-                    <MongoDbSelector />
+                    // Display current connected database (via dropdown selector)
+                    <DbSelector />
                 ) : (
-                    // Not Connected — Show Connect DB Button
+                    // Show "Connect DB" button if no active connection
                     <Link
                         href="/connect"
                         className='px-4 py-2 text-sm font-semibold text-black bg-white border border-zinc-300 hover:bg-zinc-100 rounded-3xl flex gap-2 items-center cursor-pointer transition-all duration-300'

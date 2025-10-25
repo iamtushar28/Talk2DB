@@ -13,7 +13,7 @@ import Logo from "../ui/Logo";
 const Navbar = () => {
   const [showProfileBanner, setShowProfileBanner] = useState(false);
 
-  // ✅ Get user & loading from Redux
+  // Get user & loading from Redux
   const { user, isLoading: isLoadingUser } = useSelector((state) => state.auth);
 
   // Sign out
@@ -42,7 +42,7 @@ const Navbar = () => {
 
         {/* loading state */}
         {isLoadingUser && (
-          <div className="h-10 w-10 bg-zinc-300 rounded-full animate-pulse"></div>
+          <div className="h-10 w-24 bg-zinc-300 rounded-full animate-pulse"></div>
         )}
 
         {/* Show user profile if logged in */}

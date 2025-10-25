@@ -12,6 +12,7 @@
     "@reduxjs/toolkit": "^2.9.2",
     "firebase": "^12.4.0",
     "mongodb": "^6.20.0",
+    "mysql2": "^3.15.3",
     "next": "15.5.4",
     "react": "19.1.0",
     "react-dom": "19.1.0",
