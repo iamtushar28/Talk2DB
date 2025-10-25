@@ -5,9 +5,7 @@ import { useSelector } from "react-redux";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import Image from "next/image";
-import UiButton from "../ui/UiButton";
 import { IoMdArrowForward } from "react-icons/io";
-import { IoRocket } from "react-icons/io5";
 import ProfileBanner from "./ProfileBanner";
 import Link from "next/link";
 
@@ -31,9 +29,7 @@ const Navbar = () => {
       </Link>
 
       <div className="flex gap-2 md:gap-4 items-center">
-        {/* go pro button */}
-        <UiButton title="Go Pro" icon={<IoRocket />} />
-
+      
         {/* Show "Sign In" button if no user */}
         {!user && !isLoadingUser && (
           <Link
