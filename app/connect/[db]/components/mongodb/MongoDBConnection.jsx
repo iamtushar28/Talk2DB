@@ -7,9 +7,9 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { toast, Toaster } from 'react-hot-toast';
 import Link from 'next/link';
 import { useRouter } from "next/navigation";
-import ConnectionFormField from './ConnectionFormField';
-import ActionButton from './ActionButton';
-import FetchSchemaSection from './FetchSchemaSection';
+import ConnectionFormField from '../common/ConnectionFormField';
+import FetchSchemaSection from '../common/FetchSchemaSection';
+import ActionButton from '../common/ActionButton';
 
 const MongoDBConnection = () => {
     // Local State
