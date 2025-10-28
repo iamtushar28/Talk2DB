@@ -2,7 +2,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSelectedDb } from '@/redux-store/dbConnectionsSlice';
-import { SiMongodb, SiMysql } from "react-icons/si"; // add more icons as needed
+import Link from 'next/link';
+import { SiMongodb, SiMysql } from "react-icons/si";
+import { IoAddSharp } from "react-icons/io5";
 
 const DbSelector = () => {
     const dispatch = useDispatch();
@@ -69,11 +71,20 @@ const DbSelector = () => {
                                 {renderDbIcon(db.dbType)}
                             </span>
                             {/* db name */}
-                            <p className='max-w-44 truncate'>
+                            <p className='max-w-44 truncate text-sm'>
                                 {db.dbName}
                             </p>
                         </button>
                     ))}
+                    {/* add databse redirect link */}
+                    <Link
+                        href={'/connect'}
+                        className="w-full px-3 py-2 text-start text-sm hover:bg-zinc-100 rounded-full cursor-pointer flex items-center gap-2"
+                    >
+                        <IoAddSharp />
+                        Add DB
+                    </Link>
+
                     {connections.length === 0 && (
                         <div className="px-3 py-2 text-zinc-500">No connections available</div>
                     )}

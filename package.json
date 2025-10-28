@@ -20,7 +20,8 @@
     "react-hot-toast": "^2.6.0",
     "react-icons": "^5.5.0",
     "react-redux": "^9.2.0",
-    "react-syntax-highlighter": "^15.6.6"
+    "react-syntax-highlighter": "^15.6.6",
+    "sql-formatter": "^15.6.10"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

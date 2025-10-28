@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { IoPlayOutline } from "react-icons/io5";
 import { PiSpinnerBold } from "react-icons/pi";
 import { BiShowAlt } from "react-icons/bi";
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { dracula } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import Result from './Result';
 import ErrorMessage from '../ui/ErrorMessage';
+import FormattedQueryViewer from './FormattedQueryViewer';
 
 /**
  * Component: GeneratedResponse
@@ -18,8 +17,6 @@ const GeneratedResponse = ({ query, dbConnectionData }) => {
     const [isRunning, setIsRunning] = useState(false); // Loader state while running query
     const [error, setError] = useState(null);       // Error message if query fails
     const [showResult, setShowResult] = useState(false); // Controls visibility of result modal
-
-    const language = 'javascript'; // Syntax highlighting language
     const hasQuery = query && query.trim().length > 0; // Validate non-empty query
 
     /**
@@ -100,19 +97,7 @@ const GeneratedResponse = ({ query, dbConnectionData }) => {
             {/* ===== Query Display ===== */}
             {hasQuery ? (
                 // Display generated query with syntax highlighting
-                <SyntaxHighlighter
-                    language={language}
-                    style={dracula}
-                    wrapLines={true}
-                    customStyle={{
-                        padding: '16px',
-                        borderRadius: '24px',
-                        fontSize: '14px',
-                        overflowX: 'auto',
-                    }}
-                >
-                    {query}
-                </SyntaxHighlighter>
+                <FormattedQueryViewer dbType={dbConnectionData.dbType} query={query} />
             ) : (
                 // Placeholder text when no query is generated
                 <div className='w-full p-4 bg-gray-50 rounded-full'>

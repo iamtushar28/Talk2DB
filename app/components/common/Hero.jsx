@@ -8,7 +8,7 @@ import GeneratedResponse from "./GeneratedResponse";
 
 const Hero = () => {
     const dispatch = useDispatch();
-    const { user } = useSelector((state) => state.auth);
+    const { user, isLoading: isLoadingUser } = useSelector((state) => state.auth);
     const { selectedDb, isLoading } = useSelector((state) => state.dbConnections);
     const [generatedQuery, setGeneratedQuery] = React.useState("");
 
@@ -39,6 +39,7 @@ const Hero = () => {
                     user={user}
                     isConnected={!!selectedDb}
                     isLoadingConnection={isLoading}
+                    isLoadingUser={isLoadingUser}
                     selectedDb={selectedDb}
                     setGeneratedQuery={setGeneratedQuery}
                 />
