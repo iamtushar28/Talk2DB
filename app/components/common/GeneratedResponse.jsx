@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { IoPlayOutline } from "react-icons/io5";
-import { PiSpinnerBold } from "react-icons/pi";
 import { BiShowAlt } from "react-icons/bi";
-import Result from './Result';
 import ErrorMessage from '../ui/ErrorMessage';
 import FormattedQueryViewer from './FormattedQueryViewer';
+import ActionButton from './ActionButton';
+import Result from '../Result/Result';
 
 /**
  * Component: GeneratedResponse
@@ -48,6 +48,7 @@ const GeneratedResponse = ({ query, dbConnectionData }) => {
             if (!res.ok) throw new Error(data.error || 'Failed to execute query.');
 
             setResult(data.result);
+            console.log(data.result);
             setShowResult(true);
         } catch (err) {
             setError(err.message);
@@ -64,23 +65,14 @@ const GeneratedResponse = ({ query, dbConnectionData }) => {
 
                 <div className='flex gap-1'>
                     {/* Run Query Button */}
-                    <button
+                    <ActionButton
                         onClick={handleRunQuery}
-                        disabled={!hasQuery || !dbConnectionData}
-                        className={`px-3 md:px-4 py-2 text-sm font-semibold text-black bg-white hover:bg-zinc-100 rounded-3xl flex gap-2 items-center cursor-pointer transition-all duration-300 disabled:cursor-not-allowed disabled:text-zinc-400 disabled:hover:bg-white ${isRunning ? 'bg-zinc-100' : ''}`}
-                    >
-                        {isRunning ? (
-                            <>
-                                Running
-                                <PiSpinnerBold className='text-xl animate-spin' />
-                            </>
-                        ) : (
-                            <>
-                                Run Query
-                                <IoPlayOutline className='text-lg' />
-                            </>
-                        )}
-                    </button>
+                        isDisabled={!hasQuery || !dbConnectionData}
+                        isRunning={isRunning}
+                        idleLabel="Run Query" // Custom Label
+                        runningLabel="Running" // Custom Running Label
+                        IdleIcon={IoPlayOutline} // Custom Icon
+                    />
 
                     {/* Show Result Button */}
                     <button

@@ -71,7 +71,7 @@ const DbSelector = () => {
                                 {renderDbIcon(db.dbType)}
                             </span>
                             {/* db name */}
-                            <p className='max-w-44 truncate text-sm'>
+                            <p className='max-w-44 truncate'>
                                 {db.dbName}
                             </p>
                         </button>
@@ -79,7 +79,7 @@ const DbSelector = () => {
                     {/* add databse redirect link */}
                     <Link
                         href={'/connect'}
-                        className="w-full px-3 py-2 text-start text-sm hover:bg-zinc-100 rounded-full cursor-pointer flex items-center gap-2"
+                        className="w-full px-3 py-2 mt-1 text-center bg-zinc-100 rounded-full cursor-pointer flex justify-center items-center gap-2"
                     >
                         <IoAddSharp />
                         Add DB
