@@ -1,1 +1,15 @@
 @import "tailwindcss";
+
+/* in your index.css */
+.scrollbar-thin::-webkit-scrollbar {
+  height: 0px;
+}
+
+/* Remove black outline when clicking chart sections */
+.recharts-sector:focus,
+.recharts-bar-rectangle:focus,
+.recharts-rectangle:focus,
+.recharts-surface:focus {
+  outline: none !important;
+}
+

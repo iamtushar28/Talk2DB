@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IoAddSharp } from "react-icons/io5";
 import FormatResultOptions from './FormatResultOptions';
 import ResultTable from './ResultTable';
@@ -7,7 +7,75 @@ import ResultLoader from './ResultLoader';
 
 const Result = ({ result, onClose }) => {
     const [viewMode, setViewMode] = useState('table'); // 'table' | 'chart' | 'loading'
+    const [profiledData, setProfiledData] = useState(null);
 
+    // handle view changes
+    const handleChangeView = async (mode) => {
+        if (mode === 'chart') {
+            // if profiling already done, just switch to chart
+            if (profiledData) {
+                setViewMode('chart');
+                return;
+            }
+
+            setViewMode('loading'); // show loader
+
+            // start profiling only once
+            const profile = await profileData(result);
+            setProfiledData(profile);
+            setViewMode('chart');
+        } else {
+            setViewMode(mode);
+        }
+    };
+
+    // -----------------------------
+    // Step 1: Data Profiling Function
+    // -----------------------------
+    const profileData = async (data) => {
+        if (!data || data.length === 0) return null;
+
+        // take first row to get schema
+        const firstRow = data[0];
+        const columns = Object.keys(firstRow);
+
+        const profile = columns.map((col) => {
+            const values = data.map((row) => row[col]);
+            const numericValues = values.filter((v) => !isNaN(v) && v !== null && v !== '');
+            const uniqueValues = [...new Set(values)];
+            const sampleValues = values.slice(0, 5);
+
+            return {
+                name: col,
+                sample_values: sampleValues,
+                unique_count: uniqueValues.length,
+                type: detectType(values, numericValues),
+                min: numericValues.length ? Math.min(...numericValues) : null,
+                max: numericValues.length ? Math.max(...numericValues) : null,
+            };
+        });
+
+        // small delay to simulate processing
+        await new Promise((r) => setTimeout(r, 1500));
+
+        return { columns: profile, row_count: data.length };
+    };
+
+    // detect basic column type
+    const detectType = (values, numericValues) => {
+        if (numericValues.length === values.length) return 'number';
+        if (values.every(v => !isNaN(Date.parse(v)))) return 'date';
+        return 'string';
+    };
+
+    useEffect(() => {
+        // reset profiling when new data arrives
+        setProfiledData(null);
+        setViewMode('table');
+    }, [result]);
+
+
+    // No result case
     if (!result || result.length === 0) {
         return (
             <div className='h-screen w-full bg-black/30 fixed top-0 left-0 flex justify-center items-center'>
@@ -26,32 +94,33 @@ const Result = ({ result, onClose }) => {
     }
 
     return (
-        <div className='h-screen w-full bg-black/30 fixed top-0 left-0 flex justify-center items-center overflow-auto p-4'>
-            <div className='w-full max-w-6xl h-fit px-4 py-8 bg-white rounded-3xl flex flex-col gap-4 relative'>
+        <div className='fixed inset-0 bg-black/30 flex justify-center items-center overflow-y-auto pb-8 pt-24 px-2 z-50'>
 
+            <div className='w-full max-w-6xl mt-6 bg-white rounded-3xl p-5 md:p-8 relative'>
                 {/* Close button */}
                 <button
                     onClick={onClose}
-                    className='w-fit p-3 border-zinc-300 rounded-lg hover:bg-zinc-100 transition-all duration-300 cursor-pointer absolute top-2 right-2'
+                    className='absolute top-4 right-4 p-3 border-zinc-300 rounded-lg hover:bg-zinc-100 transition-all duration-300'
                 >
                     <IoAddSharp className='rotate-45 text-xl' />
                 </button>
 
-                <h4 className='text-lg font-semibold'>Results</h4>
+                <h4 className='text-lg font-semibold mb-4'>Results</h4>
 
-                {/* format result options component */}
                 <FormatResultOptions
                     result={result}
                     viewMode={viewMode}
-                    onChangeView={setViewMode}
+                    onChangeView={handleChangeView}
                 />
 
-                {/* Conditional View Rendering */}
                 {viewMode === 'table' && <ResultTable result={result} />}
-                {viewMode === 'chart' && <ResultChart result={result} />}
                 {viewMode === 'loading' && <ResultLoader />}
+                {viewMode === 'chart' && (
+                    <ResultChart profiledData={profiledData} rawData={result} />
+                )}
             </div>
         </div>
+
     );
 };
 

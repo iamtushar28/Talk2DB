@@ -4,7 +4,7 @@ import DownloadCSV from './DownloadCSV';
 
 const FormatResultOptions = ({ result, viewMode, onChangeView }) => {
     return (
-        <div className='flex justify-between items-center'>
+        <div className='mb-4 flex justify-between items-center'>
 
             {/* View format toggle */}
             <div className='flex'>
