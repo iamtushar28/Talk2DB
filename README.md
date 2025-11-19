@@ -49,3 +49,14 @@ Allowed operations:
 ---
 
 # Working...
+
+Gemini Query Generation Error: Error [ApiError]: {"error":{"code":503,"message":"The model is overloaded. Please try again later.","status":"UNAVAILABLE"}}
+    at async POST (app\api\gemini\generate-query\route.js:40:22)
+  38 |
+  39 |     // 3. Call the Gemini API for Query Generation
+> 40 |     const response = await generateContent({
+     |                      ^
+  41 |       model: GEMINI_MODEL,
+  42 |       contents: fullPrompt,
+  43 |       config: { {
+  status: 503

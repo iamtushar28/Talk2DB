@@ -11,7 +11,6 @@ const Hero = () => {
     const dispatch = useDispatch();
     const { user, isLoading: isLoadingUser } = useSelector((state) => state.auth);
     const { selectedDb, isLoading } = useSelector((state) => state.dbConnections);
-    const [generatedQuery, setGeneratedQuery] = React.useState("");
 
     // Fetch user's DB connections when user logs in or changes
     useEffect(() => {
@@ -41,13 +40,10 @@ const Hero = () => {
                     isConnected={!!selectedDb}
                     isLoadingConnection={isLoading}
                     isLoadingUser={isLoadingUser}
-                    selectedDb={selectedDb}
-                    setGeneratedQuery={setGeneratedQuery}
                 />
 
                 {/* Generated query output */}
                 <GeneratedResponse
-                    query={generatedQuery}
                     dbConnectionData={selectedDb}
                 />
             </div>

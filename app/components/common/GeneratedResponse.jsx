@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSelector } from "react-redux";
 import { IoPlayOutline } from "react-icons/io5";
 import { BiShowAlt } from "react-icons/bi";
 import ErrorMessage from '../ui/ErrorMessage';
@@ -11,18 +12,21 @@ import Result from '../Result/Result';
  * Purpose: Displays the generated query, allows execution,
  * and shows the query result or error.
  */
-const GeneratedResponse = ({ query, dbConnectionData }) => {
+const GeneratedResponse = ({ dbConnectionData }) => {
     // Local state management
     const [result, setResult] = useState(null);     // Query execution result
     const [isRunning, setIsRunning] = useState(false); // Loader state while running query
     const [error, setError] = useState(null);       // Error message if query fails
     const [showResult, setShowResult] = useState(false); // Controls visibility of result modal
-    const hasQuery = query && query.trim().length > 0; // Validate non-empty query
+
+    const { generatedQuery } = useSelector((state) => state.query);
+    const hasQuery = generatedQuery && generatedQuery.trim().length > 0; // Validate non-empty query
 
     /**
      * Executes the generated query against backend API
      */
     const handleRunQuery = async () => {
+        // Block execution if no query or DB connection
         if (!hasQuery || !dbConnectionData) return;
 
         setIsRunning(true);
@@ -30,29 +34,34 @@ const GeneratedResponse = ({ query, dbConnectionData }) => {
         setResult(null);
 
         try {
-            // Construct route dynamically
-            const dbType = dbConnectionData.dbType || 'mongodb'; // fallback
+            // Determine backend route based on DB type
+            const dbType = dbConnectionData.dbType || 'mongodb';
             const route = `/api/${dbType}/execute-query`;
 
+            // Execute query on backend
             const res = await fetch(route, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    query,
+                    generatedQuery,
                     dbConnectionData,
                 }),
             });
 
             const data = await res.json();
 
+            // Backend returned an error
             if (!res.ok) throw new Error(data.error || 'Failed to execute query.');
 
+            // Successful execution
             setResult(data.result);
             console.log(data.result);
             setShowResult(true);
         } catch (err) {
+            // Network or server error
             setError(err.message);
         } finally {
+            // Stop loading state
             setIsRunning(false);
         }
     };
@@ -89,7 +98,7 @@ const GeneratedResponse = ({ query, dbConnectionData }) => {
             {/* ===== Query Display ===== */}
             {hasQuery ? (
                 // Display generated query with syntax highlighting
-                <FormattedQueryViewer dbType={dbConnectionData.dbType} query={query} />
+                <FormattedQueryViewer dbType={dbConnectionData.dbType} query={generatedQuery} />
             ) : (
                 // Placeholder text when no query is generated
                 <div className='w-full p-4 bg-gray-50 rounded-full'>

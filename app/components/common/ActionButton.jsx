@@ -5,15 +5,6 @@ import { IoPlayOutline } from 'react-icons/io5';
 /**
  * Highly reusable ActionButton component for various actions.
  * It dynamically displays text and an icon based on its state (idle or running).
- *
- * @param {object} props - The component props.
- * @param {() => void} props.onClick - The function to call when the button is clicked.
- * @param {boolean} props.isDisabled - If true, the button is disabled.
- * @param {boolean} props.isRunning - If true, the button shows the 'Running' state with a spinner.
- * @param {string} props.idleLabel - The text to display when the button is idle (e.g., "Run Query").
- * @param {string} props.runningLabel - The text to display when the button is running (e.g., "Executing").
- * @param {React.ElementType} props.IdleIcon - The icon component to display when idle.
- * @returns {JSX.Element} The ActionButton component.
  */
 const ActionButton = ({
     onClick,

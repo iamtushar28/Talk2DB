@@ -53,7 +53,7 @@ const QuickGuide = () => {
       </div>
 
       {/* guide guide card */}
-      <ZigZagSteps steps={steps} />;
+      <ZigZagSteps steps={steps} />
 
     </div>
   )

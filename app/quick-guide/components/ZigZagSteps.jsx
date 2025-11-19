@@ -48,11 +48,11 @@ export default function ZigZagSteps({ steps }) {
                     className="fixed inset-0 z-50 bg-black/50 flex justify-center items-center p-2 md:p-10"
                     onClick={() => setViewerImage(null)}
                 >
-                    <div className="relative w-full max-w-5xl h-auto md:h-[80vh] p-2 md:p-5 bg-white rounded-xl">
+                    <div className="relative w-full max-w-5xl h-auto md:h-[80vh] p-[1px] md:p-1 rounded-xl">
                         <img
                             src={viewerImage}
                             alt="Full View"
-                            className="w-full h-full object-contain"
+                            className="w-full h-full object-fit rounded-xl"
                         />
                     </div>
                 </div>

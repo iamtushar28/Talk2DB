@@ -11,8 +11,6 @@ import DbSelector from './DbSelector';
  */
 const QueryInputBox = ({
     user,
-    setGeneratedQuery,
-    selectedDb,
     isConnected,
     isLoadingConnection,
     isLoadingUser
@@ -27,10 +25,7 @@ const QueryInputBox = ({
                 Allows users to input a natural language prompt 
                 and generate a corresponding database query. */}
             <PromptGeneratorForm
-                isConnected={isConnected}
-                setGeneratedQuery={setGeneratedQuery}
                 user={user}
-                dbConnectionData={selectedDb}
             />
 
             {/* Database Connection Status Section */}

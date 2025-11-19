@@ -2,14 +2,14 @@ import mysql from "mysql2/promise";
 
 /**
  * POST /api/mysql/execute-query
- * Body: { query: string, dbConnectionData: { connectionURL, dbName } }
+ * Body: { generatedQuery: string, dbConnectionData: { connectionURL, dbName } }
  * Executes a read-only query on MySQL.
  */
 export async function POST(req) {
   try {
-    const { query, dbConnectionData } = await req.json();
+    const { generatedQuery, dbConnectionData } = await req.json();
 
-    if (!query || !dbConnectionData) {
+    if (!generatedQuery || !dbConnectionData) {
       return new Response(
         JSON.stringify({ error: "Missing query or database connection data." }),
         { status: 400 }
@@ -25,7 +25,7 @@ export async function POST(req) {
     }
 
     // Ensure only SELECT/read queries are allowed
-    const queryTrimmed = query.trim().toLowerCase();
+    const queryTrimmed = generatedQuery.trim().toLowerCase();
     if (!queryTrimmed.startsWith("select")) {
       return new Response(
         JSON.stringify({ error: "Only read (SELECT) queries are allowed." }),
@@ -47,7 +47,7 @@ export async function POST(req) {
     const connection = await mysql.createConnection(config);
 
     // Execute query
-    const [rows] = await connection.execute(query);
+    const [rows] = await connection.execute(generatedQuery);
 
     await connection.end();
 

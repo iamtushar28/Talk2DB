@@ -6,44 +6,45 @@ import ResultChart from './ResultChart';
 import ResultLoader from './ResultLoader';
 
 const Result = ({ result, onClose }) => {
-    const [viewMode, setViewMode] = useState('table'); // 'table' | 'chart' | 'loading'
-    const [profiledData, setProfiledData] = useState(null);
+    const [viewMode, setViewMode] = useState('table'); // current display mode
+    const [profiledData, setProfiledData] = useState(null); // cached profiling result
 
-    // handle view changes
+    // Switch between table / chart / loading modes
     const handleChangeView = async (mode) => {
         if (mode === 'chart') {
-            // if profiling already done, just switch to chart
+            // Use cached results if profiling already done
             if (profiledData) {
                 setViewMode('chart');
                 return;
             }
 
-            setViewMode('loading'); // show loader
+            // Show loader during profiling
+            setViewMode('loading');
 
-            // start profiling only once
+            // Run profiling once
             const profile = await profileData(result);
             setProfiledData(profile);
+
             setViewMode('chart');
         } else {
             setViewMode(mode);
         }
     };
 
-    // -----------------------------
-    // Step 1: Data Profiling Function
-    // -----------------------------
+    // --------------------------------
+    // Profile raw row-based data
+    // --------------------------------
     const profileData = async (data) => {
         if (!data || data.length === 0) return null;
 
-        // take first row to get schema
-        const firstRow = data[0];
+        const firstRow = data[0]; // infer schema from first row
         const columns = Object.keys(firstRow);
 
         const profile = columns.map((col) => {
             const values = data.map((row) => row[col]);
             const numericValues = values.filter((v) => !isNaN(v) && v !== null && v !== '');
             const uniqueValues = [...new Set(values)];
-            const sampleValues = values.slice(0, 5);
+            const sampleValues = values.slice(0, 5); // first 5 values for preview
 
             return {
                 name: col,
@@ -55,27 +56,27 @@ const Result = ({ result, onClose }) => {
             };
         });
 
-        // small delay to simulate processing
+        // simulate slow computation
         await new Promise((r) => setTimeout(r, 1500));
 
         return { columns: profile, row_count: data.length };
     };
 
-    // detect basic column type
+    // Basic type detection: numeric → date → string
     const detectType = (values, numericValues) => {
         if (numericValues.length === values.length) return 'number';
         if (values.every(v => !isNaN(Date.parse(v)))) return 'date';
         return 'string';
     };
 
+    // Reset when new result data arrives
     useEffect(() => {
-        // reset profiling when new data arrives
         setProfiledData(null);
         setViewMode('table');
     }, [result]);
 
 
-    // No result case
+    // No results fallback UI
     if (!result || result.length === 0) {
         return (
             <div className='h-screen w-full bg-black/30 fixed top-0 left-0 flex justify-center items-center'>
@@ -94,33 +95,37 @@ const Result = ({ result, onClose }) => {
     }
 
     return (
-        <div className='fixed inset-0 bg-black/30 flex justify-center items-center overflow-y-auto pb-8 pt-24 px-2 z-50'>
-
-            <div className='w-full max-w-6xl mt-6 bg-white rounded-3xl p-5 md:p-8 relative'>
-                {/* Close button */}
+        <div className="fixed inset-0 bg-black/30 flex justify-center items-start overflow-y-auto py-10 px-2 z-50">
+            <div className='w-full max-w-6xl bg-white rounded-3xl p-5 md:p-8 relative'>
+                {/* Close modal button */}
                 <button
                     onClick={onClose}
-                    className='absolute top-4 right-4 p-3 border-zinc-300 rounded-lg hover:bg-zinc-100 transition-all duration-300'
+                    className='absolute top-4 right-4 p-3 border-zinc-300 rounded-lg hover:bg-zinc-100 transition-all duration-300 cursor-pointer'
                 >
                     <IoAddSharp className='rotate-45 text-xl' />
                 </button>
 
                 <h4 className='text-lg font-semibold mb-4'>Results</h4>
 
+                {/* Options to switch view */}
                 <FormatResultOptions
                     result={result}
                     viewMode={viewMode}
                     onChangeView={handleChangeView}
                 />
 
+                {/* Table view */}
                 {viewMode === 'table' && <ResultTable result={result} />}
+
+                {/* Loader while profiling */}
                 {viewMode === 'loading' && <ResultLoader />}
+
+                {/* Chart view */}
                 {viewMode === 'chart' && (
                     <ResultChart profiledData={profiledData} rawData={result} />
                 )}
             </div>
         </div>
-
     );
 };
 

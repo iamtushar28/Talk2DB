@@ -4,43 +4,60 @@ import { format as formatSQL } from 'sql-formatter';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
-/**
- * Component: FormattedQueryViewer
- * Purpose: Formats SQL (MySQL/Postgres) or MongoDB queries for readability.
- */
 const FormattedQueryViewer = ({ query = '', dbType = 'mysql' }) => {
-    // Format query according to database type
+
     const formatQuery = (queryText, type) => {
         if (!queryText) return '';
 
+        const lowerType = type.toLowerCase();
+
         try {
-            const lowerType = type.toLowerCase();
-
-            if (lowerType === 'mysql' || lowerType === 'sql' || lowerType === 'postgres') {
-                // Use sql-formatter for SQL-like queries
-                return formatSQL(queryText, { language: 'mysql' });
+            // ---------------------------
+            // SQL Formatting
+            // ---------------------------
+            if (['mysql', 'postgres', 'sql'].includes(lowerType)) {
+                return formatSQL(queryText, {
+                    language: lowerType === 'postgres' ? 'postgresql' : 'mysql',
+                });
             }
 
-            if (lowerType === 'mongodb' || lowerType === 'mql') {
-                // Simple beautifier for MongoDB JSON queries
-                return queryText
-                    .replace(/,/g, ',\n')
-                    .replace(/{/g, '{\n')
-                    .replace(/}/g, '\n}');
+            // ---------------------------
+            // MongoDB Formatting
+            // ---------------------------
+            if (['mongodb', 'mql', 'mongo'].includes(lowerType)) {
+                try {
+                    // Attempt JSON prettify
+                    const parsed = JSON.parse(queryText);
+                    return JSON.stringify(parsed, null, 2);
+                } catch {
+                    // Fallback if query is not valid JSON object
+                    return queryText
+                        .replace(/({|\[)/g, '$1\n')
+                        .replace(/(}|\])/g, '\n$1')
+                        .replace(/,/g, ',\n')
+                        .replace(/\n\s*\n/g, '\n');
+                }
             }
 
+            // Default fallback
             return queryText;
+
         } catch (err) {
-            console.error('Error formatting query:', err);
-            return queryText; // fallback if formatting fails
+            console.error('Query formatting failed:', err);
+            return queryText;
         }
     };
 
     const formattedQuery = formatQuery(query, dbType);
 
+    // Determine syntax highlighting language
+    const highlightLang = ['mysql', 'postgres', 'sql'].includes(dbType.toLowerCase())
+        ? 'sql'
+        : 'javascript';
+
     return (
         <SyntaxHighlighter
-            language={dbType === 'mysql' ? 'sql' : 'javascript'}
+            language={highlightLang}
             style={dracula}
             wrapLines={true}
             customStyle={{

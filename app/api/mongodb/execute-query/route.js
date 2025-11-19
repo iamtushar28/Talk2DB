@@ -27,16 +27,16 @@ function parseArguments(argsString) {
 export async function POST(req) {
   let client; // Declare client outside try-catch for access in finally
   try {
-    const { query, dbConnectionData } = await req.json();
+    const { generatedQuery, dbConnectionData } = await req.json();
 
     // 1. Input Validation: Check for required fields.
     if (
-      !query ||
+      !generatedQuery ||
       !dbConnectionData?.connectionURL ||
       !dbConnectionData?.dbName
     ) {
       return NextResponse.json(
-        { error: "Missing required fields (query, connectionURL, or dbName)." },
+        { error: "Missing required fields (Query, connectionURL, or dbName)." },
         { status: 400 }
       );
     }
@@ -69,7 +69,7 @@ export async function POST(req) {
     ];
 
     // 4. Block known write operations.
-    if (disallowedOps.some((regex) => regex.test(query))) {
+    if (disallowedOps.some((regex) => regex.test(generatedQuery))) {
       return NextResponse.json(
         { error: "Write operations are not allowed." },
         { status: 400 }
@@ -77,7 +77,7 @@ export async function POST(req) {
     }
 
     // 5. Ensure the query is a supported read operation.
-    if (!allowedOps.some((regex) => regex.test(query))) {
+    if (!allowedOps.some((regex) => regex.test(generatedQuery))) {
       return NextResponse.json(
         {
           error:
@@ -88,7 +88,7 @@ export async function POST(req) {
     }
 
     // 6. Query Sanitation: Replace MongoDB-specific `ISODate(...)` with native JavaScript `new Date(...)`.
-    const safeQuery = query.replace(/ISODate\(([^)]+)\)/g, "new Date($1)");
+    const safeQuery = generatedQuery.replace(/ISODate\(([^)]+)\)/g, "new Date($1)");
 
     // 7. Database Connection: Initialize and connect the MongoDB client.
     client = new MongoClient(connectionURL);

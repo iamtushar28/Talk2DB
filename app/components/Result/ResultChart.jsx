@@ -4,6 +4,7 @@ import PieChartView from './PieChartView';
 import ChartToggleButtons from './ChartToggleButtons';
 
 const ResultChart = ({ rawData, profiledData }) => {
+    // Ensure profiling exists before rendering charts
     if (!profiledData || !profiledData.columns) {
         return (
             <div className="h-fit min-h-64 py-10 w-full border border-zinc-300 rounded-3xl flex justify-center items-center text-zinc-600">
@@ -12,13 +13,15 @@ const ResultChart = ({ rawData, profiledData }) => {
         );
     }
 
+    // Separate columns by detected type
     const stringCols = profiledData.columns.filter((c) => c.type === 'string');
     const numericCols = profiledData.columns.filter((c) => c.type === 'number');
 
+    // Use first valid string and numeric columns
     const stringKey = stringCols[0]?.name;
     const numericKey = numericCols[0]?.name;
 
-    // Convert numeric strings → numbers
+    // Normalize numeric fields (convert numeric strings into numbers)
     const normalizedData = rawData.map((row) => {
         const converted = { ...row };
         profiledData.columns.forEach((col) => {
@@ -30,11 +33,12 @@ const ResultChart = ({ rawData, profiledData }) => {
         return converted;
     });
 
-    const [chartType, setChartType] = useState('bar'); // default
+    const [chartType, setChartType] = useState('bar'); // default chart view
 
     return (
         <div className="h-fit min-h-[400px] w-full py-6 border border-zinc-300 rounded-3xl flex flex-col gap-6 justify-center items-center bg-white">
 
+            {/* Header and chart toggle buttons */}
             <div className="flex justify-between w-full px-4 items-center">
                 <h4 className="text-lg font-semibold text-zinc-700 capitalize">
                     {chartType === 'bar' ? 'Bar Chart' : 'Pie Chart'}
@@ -43,6 +47,7 @@ const ResultChart = ({ rawData, profiledData }) => {
                 <ChartToggleButtons currentChart={chartType} onChange={setChartType} />
             </div>
 
+            {/* Chart renderer */}
             {chartType === 'bar' && (
                 <BarChartView
                     data={normalizedData}
