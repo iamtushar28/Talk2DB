@@ -5,6 +5,7 @@ import { fetchDbConnections } from "@/redux-store/dbConnectionsSlice";
 
 import QueryInputBox from "./QueryInputBox";
 import GeneratedResponse from "./GeneratedResponse";
+import Link from "next/link";
 
 const Hero = () => {
     const dispatch = useDispatch();
@@ -27,9 +28,9 @@ const Hero = () => {
                 <h4 className="text-lg text-zinc-600">
                     Turn everyday language into queries.
                 </h4>
-                <button className="ml-1 text-violet-500 hover:underline transition-all duration-300 cursor-pointer">
+                <Link href={'/quick-guide'} className="ml-1 text-violet-500 hover:underline transition-all duration-300 cursor-pointer">
                     Quick guide.
-                </button>
+                </Link>
             </div>
 
             {/* Query input & response section */}
