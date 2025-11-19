@@ -4,7 +4,7 @@ const ResultTable = ({ result }) => {
     const columns = Object.keys(result[0]); // extract column names from first row
 
     return (
-        <div className='overflow-auto max-h-[62vh]'>
+        <div className='overflow-auto max-h-[62vh] min-h-[60vh]'>
             <table className='w-full'>
                 {/* Table header */}
                 <thead className='bg-gray-100 sticky top-0 capitalize'>

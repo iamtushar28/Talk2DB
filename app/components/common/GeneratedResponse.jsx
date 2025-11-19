@@ -55,7 +55,6 @@ const GeneratedResponse = ({ dbConnectionData }) => {
 
             // Successful execution
             setResult(data.result);
-            console.log(data.result);
             setShowResult(true);
         } catch (err) {
             // Network or server error

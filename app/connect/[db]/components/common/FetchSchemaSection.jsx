@@ -3,13 +3,12 @@ import React, { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import ActionButton from './ActionButton';
 import SchemaDisplay from './SchemaDisplay';
+import { compressSchema } from '@/utils/compressSchema';
 
 const FetchSchemaSection = ({ getValues, isValid, setDbSchema }) => {
-    // Local state for fetching status and schema
     const [isFetching, setIsFetching] = useState(false);
     const [schema, setSchema] = useState('');
 
-    // Fetch schema dynamically based on dbType
     const fetchSchema = async () => {
         const { dbName, connectionURL, dbType } = getValues();
 
@@ -26,7 +25,6 @@ const FetchSchemaSection = ({ getValues, isValid, setDbSchema }) => {
         setIsFetching(true);
 
         try {
-            // Dynamic API route based on dbType
             const res = await fetch(`/api/${dbType}/get-schema`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -36,10 +34,15 @@ const FetchSchemaSection = ({ getValues, isValid, setDbSchema }) => {
             const data = await res.json();
 
             if (res.ok) {
-                const formattedSchema = JSON.stringify(data.schema, null, 2);
+                // 🚀 COMPRESS SCHEMA HERE
+                const compressed = compressSchema(data.schema);
+
+                const formattedSchema = JSON.stringify(compressed, null, 2);
+
                 setSchema(formattedSchema);
                 setDbSchema(formattedSchema);
-                toast.success("Schema fetched successfully.");
+
+                toast.success("Schema fetched!.");
             } else {
                 toast.error(data.error || "Failed to fetch schema.");
             }
@@ -51,7 +54,6 @@ const FetchSchemaSection = ({ getValues, isValid, setDbSchema }) => {
         }
     };
 
-    // Render schema button or schema display
     return (
         <div className="w-full">
             {!schema ? (
