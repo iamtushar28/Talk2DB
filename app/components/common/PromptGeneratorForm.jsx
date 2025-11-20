@@ -52,7 +52,7 @@ const PromptGeneratorForm = ({ user }) => {
                 <button
                     onClick={handleGenerateQuery}
                     disabled={loading || !userQuery.trim()} // Prevent empty or duplicate submissions
-                    className="px-5 py-2 font-semibold text-white bg-violet-600 hover:bg-violet-700 rounded-3xl disabled:opacity-60 disabled:cursor-not-allowed flex gap-2 items-center transition-all duration-300"
+                    className="px-5 py-2 font-semibold text-white bg-violet-600 hover:bg-violet-700 rounded-3xl disabled:opacity-60 disabled:cursor-not-allowed flex gap-2 items-center transition-all duration-300 cursor-pointer"
                 >
                     {loading ? (
                         // Loading state UI

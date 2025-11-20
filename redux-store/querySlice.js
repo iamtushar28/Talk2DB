@@ -28,8 +28,8 @@ export const generateQuery = createAsyncThunk(
 const querySlice = createSlice({
   name: "query",
   initialState: {
-    generatedQuery: "", // SQL returned by API
-    loading: false, // request state
+    generatedQuery: "", // SQL/Mongo query returned by API
+    loading: false, // request loading state
     error: null, // error messages
   },
   reducers: {
@@ -38,7 +38,13 @@ const querySlice = createSlice({
       state.generatedQuery = "";
       state.error = null;
     },
+
+    // ⭐ NEW: Update generated query manually (for Edit feature)
+    updateGeneratedQuery(state, action) {
+      state.generatedQuery = action.payload; // store edited query
+    },
   },
+
   extraReducers: (builder) => {
     builder
       // API request started
@@ -49,15 +55,17 @@ const querySlice = createSlice({
       // API success
       .addCase(generateQuery.fulfilled, (state, action) => {
         state.loading = false;
-        state.generatedQuery = action.payload;
+        state.generatedQuery = action.payload; // store generated query
       })
       // API failure
       .addCase(generateQuery.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload; // store error message
       });
   },
 });
 
-export const { clearQuery } = querySlice.actions;
+// Export reducer actions
+export const { clearQuery, updateGeneratedQuery } = querySlice.actions;
+
 export default querySlice.reducer;
