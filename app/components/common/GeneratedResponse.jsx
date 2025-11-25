@@ -107,7 +107,7 @@ const GeneratedResponse = ({ dbConnectionData }) => {
                         <button
                             onClick={handleEdit}
                             disabled={!hasQuery}
-                            className='px-3 md:px-4 py-2 text-sm font-semibold bg-white hover:bg-zinc-100 rounded-3xl flex gap-2 items-center disabled:text-zinc-400 disabled:hover:bg-white cursor-pointer'
+                            className='px-3 md:px-4 py-2 text-sm font-semibold bg-white hover:bg-zinc-100 rounded-3xl flex gap-2 items-center disabled:text-zinc-400 disabled:hover:bg-white cursor-pointer disabled:cursor-not-allowed'
                         >
                             <span className='hidden md:block'>Edit</span>
                             <BiEditAlt className='text-lg' />
@@ -118,7 +118,7 @@ const GeneratedResponse = ({ dbConnectionData }) => {
                     <button
                         onClick={() => setShowResult(true)}
                         disabled={!result}
-                        className='px-3 md:px-4 py-2 text-sm font-semibold bg-white hover:bg-zinc-100 rounded-3xl flex gap-2 items-center disabled:text-zinc-400 disabled:hover:bg-white cursor-pointer'
+                        className='px-3 md:px-4 py-2 text-sm font-semibold bg-white hover:bg-zinc-100 rounded-3xl flex gap-2 items-center disabled:text-zinc-400 disabled:hover:bg-white cursor-pointer disabled:cursor-not-allowed'
                     >
                         <span className='hidden md:block'>Show</span>
                         <BiTable className='text-lg' />

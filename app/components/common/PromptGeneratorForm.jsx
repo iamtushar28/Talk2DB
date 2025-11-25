@@ -40,6 +40,8 @@ const PromptGeneratorForm = ({ user }) => {
             <textarea
                 cols={70}
                 rows={4}
+                name="prompt"
+                id="prompt"
                 placeholder="Show total sale of this month."
                 className="p-4 border border-zinc-300 hover:ring-2 hover:ring-violet-500 outline-none rounded-3xl transition-all duration-300 resize-none"
                 value={userQuery}

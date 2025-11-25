@@ -87,7 +87,7 @@ const DbSelector = () => {
                                 {/* Section Header */}
                                 <div className="w-full px-3 py-1 flex gap-2 items-center">
                                     {config.headerIcon}
-                                    <div className={`w-[80%] h-[0.4px] border ${config.border}`}></div>
+                                    <div className={`w-[80%] h-[0.2px] border rounded-full ${config.border}`}></div>
                                 </div>
 
                                 {/* DB items (no icons) */}
@@ -97,7 +97,7 @@ const DbSelector = () => {
                                         onClick={() => handleSelect(db)}
                                         className="w-full px-3 py-2 text-start hover:bg-zinc-100 rounded-full cursor-pointer"
                                     >
-                                        <p className="truncate text-sm">{db.dbName}</p>
+                                        <p className="truncate text-sm capitalize">{db.dbName}</p>
                                     </button>
                                 ))}
                             </div>
@@ -107,7 +107,7 @@ const DbSelector = () => {
                     {/* Add new DB */}
                     <Link
                         href={'/connect'}
-                        className="w-full px-3 py-2 mt-1 text-sm text-center bg-zinc-100 rounded-full cursor-pointer flex justify-center items-center gap-2"
+                        className="w-full px-3 py-2 mt-1 text-sm text-center bg-zinc-100 hover:bg-zinc-50 rounded-full cursor-pointer flex justify-center items-center gap-2 transition-all duration-200"
                     >
                         <IoAddSharp />
                         Add DB

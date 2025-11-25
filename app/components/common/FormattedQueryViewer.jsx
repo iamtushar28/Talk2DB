@@ -3,6 +3,7 @@ import React from 'react';
 import { format as formatSQL } from 'sql-formatter';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import CopyQuery from './CopyQuery';
 
 const FormattedQueryViewer = ({ query = '', dbType = 'mysql' }) => {
 
@@ -56,20 +57,26 @@ const FormattedQueryViewer = ({ query = '', dbType = 'mysql' }) => {
         : 'javascript';
 
     return (
-        <SyntaxHighlighter
-            language={highlightLang}
-            style={dracula}
-            wrapLines={true}
-            customStyle={{
-                padding: '16px',
-                borderRadius: '24px',
-                fontSize: '14px',
-                whiteSpace: 'pre-wrap',
-                wordBreak: 'break-word',
-            }}
-        >
-            {formattedQuery}
-        </SyntaxHighlighter>
+        <div className='h-auto w-full relative'>
+            <SyntaxHighlighter
+                language={highlightLang}
+                style={dracula}
+                wrapLines={true}
+                customStyle={{
+                    padding: '16px',
+                    borderRadius: '24px',
+                    fontSize: '14px',
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word',
+                }}
+            >
+                {formattedQuery}
+            </SyntaxHighlighter>
+
+            {/* copy query component */}
+            <CopyQuery query={formattedQuery} />
+
+        </div>
     );
 };
 
