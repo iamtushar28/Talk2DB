@@ -23,7 +23,7 @@ const Hero = () => {
         <div className="w-full h-fit py-16 flex flex-col gap-10 justify-center items-center">
             {/* Page header */}
             <div className="flex flex-col justify-center items-center">
-                <h4 className="text-2xl">Generate SQL Query</h4>
+                <h4 className="text-2xl">Generate SQL/MQL Query</h4>
                 <h4 className="text-lg text-zinc-600">
                     Turn everyday language into queries.
                 </h4>

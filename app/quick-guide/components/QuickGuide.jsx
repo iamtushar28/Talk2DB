@@ -18,14 +18,14 @@ const QuickGuide = () => {
       image: "/images/quick-guide/step2.webp"
     },
     {
-      shortTitle: "Generate SQL",
-      title: "Generate SQL With a Prompt",
+      shortTitle: "Generate SQL/MQL",
+      title: "Generate SQL/MQL With a Prompt",
       subtitle: "Describe what you need—e.g., “Show top 3 selling products”—and let AI create the query.",
       image: "/images/quick-guide/step3.webp"
     },
     {
       shortTitle: "View Result",
-      title: "View & Export Query Resultsk",
+      title: "View & Export Query Results",
       subtitle: "Run your query to see results in a table and export them instantly as a CSV file.",
       image: "/images/quick-guide/step4.webp"
     },
